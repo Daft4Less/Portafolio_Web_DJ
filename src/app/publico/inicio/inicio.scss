@@ -1,0 +1,27 @@
+.home {
+  padding: 2rem 1.5rem;
+}
+
+.home h1 {
+  font-size: 1.8rem;
+  margin-bottom: 0.75rem;
+}
+
+.home p {
+  max-width: 600px;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.home-actions button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+}
