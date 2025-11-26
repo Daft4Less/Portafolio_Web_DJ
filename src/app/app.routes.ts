@@ -9,6 +9,9 @@ import { Login } from './auth/login/login';
 import { Dashboard } from './programador/dashboard/dashboard';
 import { Proyectos } from './programador/proyectos/proyectos';
 import { Asesorias } from './programador/asesorias/asesorias';
+import { AdmProgramadores } from './admin/adm-programadores/adm-programadores';
+import { AdmUsuarios } from './admin/adm-usuarios/adm-usuarios';
+import { AdmAsesorias } from './admin/adm-asesorias/adm-asesorias';
 
 export const routes: Routes = [
     {path: '', component: Inicio},
@@ -20,5 +23,8 @@ export const routes: Routes = [
     {path: 'programador/dashboard', component: Dashboard},
     {path: 'programador/proyectos',component: Proyectos},
     {path: 'programador/asesorias', component: Asesorias },
+    { path: 'admin/adm-programadores', component: AdmProgramadores },
+    { path: 'admin/adm-usuarios', component: AdmUsuarios },
+    { path: 'admin/adm-asesorias', component: AdmAsesorias },
     {path: '**', redirectTo: ''}
 ];

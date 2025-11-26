@@ -1,0 +1,36 @@
+.admin-panel {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.descripcion {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #555;
+}
+
+.opciones {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+}
+
+button {
+  padding: 0.8rem 1.5rem;
+  background: #005bbb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #004799;
+}
