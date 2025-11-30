@@ -4,8 +4,11 @@
   <p class="descripcion">Administra tus proyectos académicos y laborales.</p>
 
   <div class="acciones">
-    <button class="btn-crear">+ Crear proyecto</button>
+    <button class="btn-crear" (click)="toggleFormulario()">+ Crear proyecto</button>
   </div>
+
+  
+  <app-formulario-proyecto *ngIf="mostrarFormulario"></app-formulario-proyecto>
 
   <div class="lista-proyectos">
 
@@ -20,3 +23,4 @@
   </div>
 
 </section>
+

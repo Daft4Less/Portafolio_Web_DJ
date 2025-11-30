@@ -1,0 +1,50 @@
+<form [formGroup]="proyectoForm" (ngSubmit)="onSubmit()" class="proyecto-form">
+
+  <div class="form-group">
+    <label for="nombre">Nombre del Proyecto</label>
+    <input id="nombre" type="text" formControlName="nombre">
+    <div *ngIf="proyectoForm.get('nombre')?.invalid && (proyectoForm.get('nombre')?.dirty || proyectoForm.get('nombre')?.touched)" class="error-messages">
+      <small *ngIf="proyectoForm.get('nombre')?.errors?.['required']">El nombre es requerido.</small>
+      <small *ngIf="proyectoForm.get('nombre')?.errors?.['minlength']">El nombre debe tener al menos 5 caracteres.</small>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="descripcion">Descripción</label>
+    <textarea id="descripcion" formControlName="descripcion" rows="4"></textarea>
+    <div *ngIf="proyectoForm.get('descripcion')?.invalid && (proyectoForm.get('descripcion')?.dirty || proyectoForm.get('descripcion')?.touched)" class="error-messages">
+      <small *ngIf="proyectoForm.get('descripcion')?.errors?.['required']">La descripción es requerida.</small>
+      <small *ngIf="proyectoForm.get('descripcion')?.errors?.['maxlength']">La descripción no puede exceder los 500 caracteres.</small>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="tecnologias">Tecnologías (separadas por comas)</label>
+    <input id="tecnologias" type="text" formControlName="tecnologias">
+    <div *ngIf="proyectoForm.get('tecnologias')?.invalid && (proyectoForm.get('tecnologias')?.dirty || proyectoForm.get('tecnologias')?.touched)" class="error-messages">
+      <small *ngIf="proyectoForm.get('tecnologias')?.errors?.['required']">Al menos una tecnología es requerida.</small>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="linkGitHub">Enlace a GitHub</label>
+    <input id="linkGitHub" type="url" formControlName="linkGitHub">
+     <div *ngIf="proyectoForm.get('linkGitHub')?.invalid && (proyectoForm.get('linkGitHub')?.dirty || proyectoForm.get('linkGitHub')?.touched)" class="error-messages">
+      <small *ngIf="proyectoForm.get('linkGitHub')?.errors?.['required']">El enlace de GitHub es requerido.</small>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="linkDemo">Enlace a Demo (opcional)</label>
+    <input id="linkDemo" type="url" formControlName="linkDemo">
+  </div>
+
+  <div class="form-group">
+    <label for="imagenUrl">URL de la Imagen (opcional)</label>
+    <input id="imagenUrl" type="url" formControlName="imagenUrl">
+  </div>
+
+  <button type="submit" [disabled]="proyectoForm.invalid" class="btn-submit">Guardar Proyecto</button>
+
+</form>
+
