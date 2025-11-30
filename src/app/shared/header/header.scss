@@ -1,35 +1,45 @@
-.main-header {
+.cabecera {
+  width: 100%;
+  padding: 1rem 2.5rem;
+  background: #ffffff;
+  border-bottom: 1px solid #e4e4e4;
+
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1.5rem;
-  background: #0A66C2;   /* Azul LinkedIn */
-  color: #fff;
+  align-items: center;
+
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-.logo {
-  font-weight: 600;
-  font-size: 1.2rem;
-}
-
-.main-nav {
-  display: flex;
-  gap: 1.2rem;
-}
-
-.main-nav a {
-  color: #2c6dad;       /* Gris-azulado LinkedIn */
-  text-decoration: none;
+.cabecera__logo h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #333;
   cursor: pointer;
+}
+
+.cabecera__nav {
+  display: flex;
+  gap: 2rem;
+}
+
+.cabecera__nav a {
+  text-decoration: none;
+  font-size: 1.05rem;
   font-weight: 500;
-  transition: 0.2s ease;
+  color: #444;
+  transition: color .3s ease, transform .2s ease;
 }
 
-.main-nav a:hover {
-  color: #212b83;        /* Hover blanco fuerte */
-  text-decoration: underline; /* opcional, muy LinkedIn */
+.cabecera__nav a:hover {
+  color: #0066ff;
+  transform: translateY(-2px);
 }
 
-.main-nav a:active {
-  color: #004182;        /* Azul oscuro usado en estados activos */
+.activo {
+  color: #0066ff;
+  font-weight: 700;
+  border-bottom: 2px solid #0066ff;
+  padding-bottom: 3px;
 }
