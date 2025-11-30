@@ -8,7 +8,7 @@
   </div>
 
   
-  <app-formulario-proyecto *ngIf="mostrarFormulario"></app-formulario-proyecto>
+  <app-formulario-proyecto *ngIf="mostrarFormulario" (proyectoAgregado)="onProyectoAgregado($event)"></app-formulario-proyecto>
 
   <div class="lista-proyectos">
 
