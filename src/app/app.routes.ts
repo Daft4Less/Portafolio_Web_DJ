@@ -12,6 +12,7 @@ import { Asesorias } from './programador/asesorias/asesorias';
 import { AdmProgramadores } from './admin/adm-programadores/adm-programadores';
 import { AdmUsuarios } from './admin/adm-usuarios/adm-usuarios';
 import { AdmAsesorias } from './admin/adm-asesorias/adm-asesorias';
+import { AdmDashboard } from './admin/adm-dashboard/adm-dashboard';
 
 export const routes: Routes = [
     {path: '', component: Inicio},
@@ -21,6 +22,7 @@ export const routes: Routes = [
     {path: 'agendar', component: Agendar},
     {path: 'login', component: Login},
     {path: 'programador/dashboard', component: Dashboard},
+    {path:  'admin/dashboard', component: AdmDashboard},
     {path: 'programador/proyectos',component: Proyectos},
     {path: 'programador/asesorias', component: Asesorias },
     { path: 'admin/adm-programadores', component: AdmProgramadores },
