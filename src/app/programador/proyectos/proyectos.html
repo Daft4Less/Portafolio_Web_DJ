@@ -10,7 +10,12 @@
   <div class="lista-proyectos">
 
     
-    <p class="sin-proyectos">Aún no tienes proyectos registrados.</p>
+    <app-tarjeta-proyecto *ngFor="let p of proyectos" [proyecto]="p"></app-tarjeta-proyecto>
+
+    
+    <p *ngIf="!proyectos || proyectos.length === 0" class="sin-proyectos">
+      Aún no tienes proyectos registrados.
+    </p>
 
   </div>
 

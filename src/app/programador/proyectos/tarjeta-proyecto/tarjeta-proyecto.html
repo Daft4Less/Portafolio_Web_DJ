@@ -1,0 +1,19 @@
+<div *ngIf="proyecto" class="tarjeta">
+  <img *ngIf="proyecto.imagenUrl" [src]="proyecto.imagenUrl" alt="Imagen del proyecto {{ proyecto.nombre }}" class="tarjeta-imagen">
+  
+  <div class="tarjeta-contenido">
+    <h3 class="tarjeta-titulo">{{ proyecto.nombre }}</h3>
+    <p class="tarjeta-descripcion">{{ proyecto.descripcion }}</p>
+
+    <div class="tecnologias">
+      <span *ngFor="let tec of proyecto.tecnologias" class="tecnologia">{{ tec }}</span>
+    </div>
+
+    <div class="tarjeta-acciones">
+      <a *ngIf="proyecto.linkGitHub" [href]="proyecto.linkGitHub" target="_blank" rel="noopener noreferrer" class="btn-accion">GitHub</a>
+      <a *ngIf="proyecto.linkDemo" [href]="proyecto.linkDemo" target="_blank" rel="noopener noreferrer" class="btn-accion">Demo</a>
+    </div>
+  </div>
+</div>
+
+

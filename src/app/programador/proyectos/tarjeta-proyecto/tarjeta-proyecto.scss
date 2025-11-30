@@ -1,0 +1,81 @@
+.tarjeta {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden; 
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  background-color: #ffffff;
+  transition: transform 0.2s ease-in-out; 
+
+  &:hover {
+    transform: translateY(-5px); 
+  }
+
+  .tarjeta-imagen {
+    width: 100%;
+    height: 200px; 
+    object-fit: cover; 
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .tarjeta-contenido {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; 
+  }
+
+  .tarjeta-titulo {
+    font-size: 1.5em;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  .tarjeta-descripcion {
+    font-size: 0.95em;
+    color: #666;
+    line-height: 1.5;
+    flex-grow: 1; 
+  }
+
+  .tecnologias {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px; 
+
+    .tecnologia {
+      background-color: #e9ecef;
+      color: #495057;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.8em;
+      white-space: nowrap; 
+    }
+  }
+
+  .tarjeta-acciones {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-end; 
+    gap: 10px;
+
+    .btn-accion {
+      background-color: #007bff;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 0.9em;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: #0056b3;
+      }
+    }
+  }
+}
