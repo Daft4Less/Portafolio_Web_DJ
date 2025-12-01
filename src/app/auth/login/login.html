@@ -4,10 +4,14 @@
   <p class="descripcion">Accede con tu cuenta de Google</p>
 
   <div class="contenedor-boton">
-    <button class="btn-google">
+    <button class="btn-google" (click)="login()">
       <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google">
       Iniciar sesión con Google
     </button>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
   </div>
 
 </section>

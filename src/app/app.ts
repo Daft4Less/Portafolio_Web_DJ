@@ -1,22 +1,18 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AutenticacionService, UserProfile } from './services/autenticacion.service'; // <-- Importar el servicio y la interfaz
+import { AutenticacionService, UserProfile } from './services/autenticacion.service';
 import { Observable, Subscription } from 'rxjs';
-
-@Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [CommonModule, RouterOutlet],
 import { Header } from './shared/header/header';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Header],
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, Header],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App implements OnInit, OnDestroy {
+export class AppComponent implements OnInit, OnDestroy {
   user$: Observable<UserProfile | null>;
   private userSubscription: Subscription | undefined;
   currentUser: UserProfile | null = null;
