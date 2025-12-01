@@ -1,8 +1,90 @@
 <section class="admin-page">
-  <h2>Gestión de Asesorías</h2>
-  <p class="descripcion">Revisa todas las asesorías solicitadas por los usuarios.</p>
+  <h2>Gestión de Horarios de Programadores</h2>
+  <p class="descripcion">Asigna y gestiona los horarios de disponibilidad para cada programador.</p>
 
   <div class="contenido">
-    <p class="vacio">No hay solicitudes de asesoría por ahora.</p>
+    <div class="lista-programadores">
+      <h3>Programadores Activos</h3>
+      <ng-container *ngIf="programmers$ | async as programmers">
+        <div *ngIf="programmers.length === 0" class="mensaje-lista">
+          <p>No hay programadores registrados aún.</p>
+        </div>
+        <ul *ngIf="programmers.length > 0">
+        <li *ngFor="let programmer of programmers">
+          <div class="info">
+            <img [src]="programmer.photoURL || 'assets/placeholder-user.png'" alt="Foto de perfil">
+            <span>{{ programmer.displayName }} ({{ programmer.email }})</span>
+            <span class="role">{{ programmer.role }}</span>
+          </div>
+          <div class="acciones">
+            <button (click)="selectProgrammer(programmer)" class="btn-editar">Asignar Horario</button>
+          </div>
+        </li>
+      </ul>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- MODAL PARA GESTIÓN DE HORARIOS DEL PROGRAMADOR -->
+  <div class="modal-overlay" *ngIf="showModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Gestionar Horarios de {{ (selectedProgrammer$ | async)?.displayName }}</h3>
+        <button class="modal-close-btn" (click)="closeModal()">X</button>
+      </div>
+
+      <div class="seccion-horarios">
+        <h3>Horarios de Disponibilidad</h3>
+        <ng-container *ngIf="programmerSchedules$ | async as schedules">
+          <div *ngIf="schedules.length === 0" class="mensaje-lista">
+            <p>Este programador no tiene horarios registrados.</p>
+          </div>
+          <ul class="lista-horarios" *ngIf="schedules.length > 0">
+            <li *ngFor="let schedule of schedules">
+              <span>{{ daysOfWeek[schedule.dayOfWeek] }}: {{ schedule.startTime }} - {{ schedule.endTime }} ({{ schedule.isAvailable ? 'Disponible' : 'No Disponible' }})</span>
+              <div class="acciones">
+                <button (click)="editSchedule(schedule)" class="btn-editar">Editar Horario</button>
+                <button (click)="deleteSchedule(schedule.id!)" class="btn-eliminar">Eliminar Horario</button>
+              </div>
+            </li>
+          </ul>
+        </ng-container>
+
+        <div class="formulario-horario">
+          <h4>{{ (selectedSchedule$ | async) ? 'Editar Horario' : 'Agregar Nuevo Horario' }}</h4>
+          <form [formGroup]="scheduleForm" (ngSubmit)="saveSchedule()">
+            <label>
+              Día de la Semana:
+              <select formControlName="dayOfWeek">
+                <option *ngFor="let day of daysOfWeek; let i = index" [value]="i">{{ day }}</option>
+              </select>
+            </label>
+            <label>
+              Hora Inicio:
+              <select formControlName="startTime">
+                <option *ngFor="let time of timeSlots" [value]="time">{{ time }}</option>
+              </select>
+            </label>
+            <label>
+              Hora Fin:
+              <select formControlName="endTime">
+                <option *ngFor="let time of timeSlots" [value]="time">{{ time }}</option>
+              </select>
+            </label>
+            <label class="checkbox-container">
+              <input type="checkbox" formControlName="isAvailable">
+              Disponible
+            </label>
+            <div class="form-actions">
+              <button type="submit" [disabled]="!scheduleForm.valid" class="btn-guardar">
+                {{ (selectedSchedule$ | async) ? 'Guardar Cambios' : 'Agregar Horario' }}
+              </button>
+              <button type="button" (click)="cancelScheduleEdit()" class="btn-cancelar">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
+

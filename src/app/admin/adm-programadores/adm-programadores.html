@@ -3,6 +3,112 @@
   <p class="descripcion">Administra los programadores registrados.</p>
 
   <div class="contenido">
-    <p class="vacio">Aún no hay programadores registrados.</p>
+    <div class="lista-programadores">
+      <h3>Programadores Activos</h3>
+      <ng-container *ngIf="programmers$ | async as programmers">
+        <div *ngIf="programmers.length === 0" class="mensaje-lista">
+          <p>No hay programadores registrados aún.</p>
+        </div>
+        <ul *ngIf="programmers.length > 0">
+        <li *ngFor="let programmer of programmers">
+          <div class="info">
+            <img [src]="programmer.photoURL || 'assets/placeholder-user.png'" alt="Foto de perfil">
+            <span>{{ programmer.displayName }} ({{ programmer.email }})</span>
+            <span class="role">{{ programmer.role }}</span>
+          </div>
+          <div class="acciones">
+            <button (click)="selectProgrammer(programmer)" class="btn-editar">Editar</button>
+            <button (click)="deleteProgrammer(programmer.uid)" class="btn-eliminar">Eliminar</button>
+            <button (click)="demoteFromProgrammer(programmer)" class="btn-demote">Degradar</button>
+          </div>
+        </li>
+      </ul>
+      </ng-container>
+    </div>
+
+    <div class="lista-otros-usuarios">
+      <h3>Otros Usuarios (potenciales programadores)</h3>
+      <ng-container *ngIf="nonProgrammers$ | async as nonProgrammers">
+        <div *ngIf="nonProgrammers.length === 0" class="mensaje-lista">
+          <p>No hay otros usuarios para promover.</p>
+        </div>
+        <ul *ngIf="nonProgrammers.length > 0">
+          <li *ngFor="let user of nonProgrammers">
+            <div class="info">
+              <img [src]="user.photoURL || 'assets/placeholder-user.png'" alt="Foto de perfil">
+              <span>{{ user.displayName }} ({{ user.email }})</span>
+              <span class="role">{{ user.role }}</span>
+            </div>
+            <div class="acciones">
+              <button (click)="promoteToProgrammer(user)" class="btn-promover">Promover a Programador</button>
+            </div>
+          </li>
+        </ul>
+      </ng-container>
+    </div>
+
+  </div>
+
+  <!-- MODAL PARA EDITAR PROGRAMADOR -->
+  <div class="modal-overlay" *ngIf="showModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Editar Programador</h3>
+        <button class="modal-close-btn" (click)="closeModal()">X</button>
+      </div>
+
+      <div class="formulario-edicion">
+        <form [formGroup]="programmerForm" (ngSubmit)="saveProgrammer()">
+          <input type="hidden" formControlName="uid">
+          <label>
+            Nombre:
+            <input type="text" formControlName="displayName">
+          </label>
+          <label>
+            Email:
+            <input type="email" formControlName="email" readonly>
+          </label>
+          <label>
+            Foto URL:
+            <input type="text" formControlName="photoURL">
+          </label>
+          <label>
+            Rol:
+            <select formControlName="role">
+              <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+            </select>
+          </label>
+          <label>
+            Especialidad:
+            <input type="text" formControlName="especialidad">
+          </label>
+          <label>
+            Descripción:
+            <textarea formControlName="descripcion"></textarea>
+          </label>
+          <fieldset formGroupName="contacto">
+            <legend>Enlaces de Contacto</legend>
+            <label>
+              GitHub:
+              <input type="text" formControlName="github">
+            </label>
+            <label>
+              LinkedIn:
+              <input type="text" formControlName="linkedin">
+            </label>
+            <label>
+              Sitio Web:
+              <input type="text" formControlName="website">
+            </label>
+          </fieldset>
+
+          <div class="form-actions">
+            <button type="submit" [disabled]="!programmerForm.valid" class="btn-guardar">Guardar Cambios</button>
+            <button type="button" (click)="closeModal()" class="btn-cancelar">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </section>
+

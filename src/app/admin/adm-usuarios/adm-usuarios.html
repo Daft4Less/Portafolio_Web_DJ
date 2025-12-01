@@ -3,6 +3,55 @@
   <p class="descripcion">Administra los usuarios registrados del sistema.</p>
 
   <div class="contenido">
-    <p class="vacio">Aún no hay usuarios registrados.</p>
+    <div class="lista-usuarios">
+      <h3>Usuarios Normales</h3>
+      <ng-container *ngIf="normalUsers$ | async as users">
+        <div *ngIf="users.length === 0" class="mensaje-lista">
+          <p>No hay usuarios normales registrados aún.</p>
+        </div>
+        <ul *ngIf="users.length > 0">
+          <li *ngFor="let user of users">
+            <div class="info">
+              <img [src]="user.photoURL || 'assets/placeholder-user.png'" alt="Foto de perfil">
+              <span>{{ user.displayName }} ({{ user.email }})</span>
+              <span class="role">{{ user.role }}</span>
+            </div>
+            <div class="acciones">
+              <button (click)="selectUser(user)" class="btn-editar">Editar</button>
+              <button (click)="deleteUser(user.uid)" class="btn-eliminar">Eliminar</button>
+            </div>
+          </li>
+        </ul>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- MODAL PARA EDITAR USUARIO -->
+  <div class="modal-overlay" *ngIf="showModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Editar Usuario</h3>
+        <button class="modal-close-btn" (click)="closeModal()">X</button>
+      </div>
+
+      <div class="formulario-edicion">
+        <form [formGroup]="userForm" (ngSubmit)="saveUser()">
+          <input type="hidden" formControlName="uid">
+          <label>
+            Nombre:
+            <input type="text" formControlName="displayName">
+          </label>
+          <label>
+            Email:
+            <input type="email" formControlName="email" readonly>
+          </label>
+          
+          <div class="form-actions">
+            <button type="submit" [disabled]="!userForm.valid" class="btn-guardar">Guardar Cambios</button>
+            <button type="button" (click)="closeModal()" class="btn-cancelar">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </section>

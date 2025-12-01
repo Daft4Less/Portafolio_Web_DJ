@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router'; // Importar RouterLink
 
 @Component({
   selector: 'app-adm-dashboard',
-  imports: [],
+  standalone: true,
+  imports: [RouterLink],
   templateUrl: './adm-dashboard.html',
   styleUrl: './adm-dashboard.scss',
 })
