@@ -1,13 +1,27 @@
 import { TestBed } from '@angular/core/testing';
+import { Auth } from '@angular/fire/auth';
+import { Firestore } from '@angular/fire/firestore';
+import { Injector } from '@angular/core';
 
-import { Autenticacion } from './autenticacion';
+import { AutenticacionService } from './autenticacion.service';
 
-describe('Autenticacion', () => {
-  let service: Autenticacion;
+describe('AutenticacionService', () => {
+  let service: AutenticacionService;
+
+  // Mocks for the dependencies
+  const mockAuth = {};
+  const mockFirestore = {};
+  const mockInjector = {};
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(Autenticacion);
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: Auth, useValue: mockAuth },
+        { provide: Firestore, useValue: mockFirestore },
+        { provide: Injector, useValue: mockInjector }
+      ]
+    });
+    service = TestBed.inject(AutenticacionService);
   });
 
   it('should be created', () => {

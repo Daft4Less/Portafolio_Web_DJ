@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Autenticacion, UserProfile } from './services/autenticacion'; // <-- Importar el servicio y la interfaz
+import { AutenticacionService, UserProfile } from './services/autenticacion.service'; // <-- Importar el servicio y la interfaz
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
@@ -17,7 +17,7 @@ export class App implements OnInit, OnDestroy {
   currentUser: UserProfile | null = null;
   errorMessage: string | null = null;
 
-  constructor(private autenticacion: Autenticacion) {
+  constructor(private autenticacion: AutenticacionService) {
     this.user$ = this.autenticacion.getUsuarioActual();
   }
 

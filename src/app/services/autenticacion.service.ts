@@ -21,7 +21,7 @@ export interface UserProfile {
 @Injectable({
   providedIn: 'root'
 })
-export class Autenticacion {
+export class AutenticacionService {
 
   constructor(
     private auth: Auth,
