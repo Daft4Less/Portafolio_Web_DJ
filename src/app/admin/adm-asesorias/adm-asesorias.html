@@ -41,7 +41,7 @@
           </div>
           <ul class="lista-horarios" *ngIf="schedules.length > 0">
             <li *ngFor="let schedule of schedules">
-              <span>{{ daysOfWeek[schedule.dayOfWeek] }}: {{ schedule.startTime }} - {{ schedule.endTime }} ({{ schedule.isAvailable ? 'Disponible' : 'No Disponible' }})</span>
+              <span>{{ daysOfWeekArray[schedule.dayOfWeek] }}: {{ schedule.startTime }} - {{ schedule.endTime }} ({{ schedule.isAvailable ? 'Disponible' : 'No Disponible' }})</span>
               <div class="acciones">
                 <button (click)="editSchedule(schedule)" class="btn-editar">Editar Horario</button>
                 <button (click)="deleteSchedule(schedule.id!)" class="btn-eliminar">Eliminar Horario</button>
@@ -53,24 +53,22 @@
         <div class="formulario-horario">
           <h4>{{ (selectedSchedule$ | async) ? 'Editar Horario' : 'Agregar Nuevo Horario' }}</h4>
           <form [formGroup]="scheduleForm" (ngSubmit)="saveSchedule()">
-            <label>
-              Día de la Semana:
-              <select formControlName="dayOfWeek">
-                <option *ngFor="let day of daysOfWeek; let i = index" [value]="i">{{ day }}</option>
-              </select>
-            </label>
-            <label>
-              Hora Inicio:
-              <select formControlName="startTime">
-                <option *ngFor="let time of timeSlots" [value]="time">{{ time }}</option>
-              </select>
-            </label>
-            <label>
-              Hora Fin:
-              <select formControlName="endTime">
-                <option *ngFor="let time of timeSlots" [value]="time">{{ time }}</option>
-              </select>
-            </label>
+            <div formGroupName="daysOfWeek" class="days-of-week">
+              <label *ngFor="let day of daysOfWeekArray; let i = index" class="checkbox-container">
+                <input type="checkbox" [formControlName]="i">
+                {{ day }}
+              </label>
+            </div>
+            <div class="time-inputs">
+              <label>
+                Hora Inicio:
+                <input type="time" formControlName="startTime" min="07:00" max="21:00">
+              </label>
+              <label>
+                Hora Fin:
+                <input type="time" formControlName="endTime" min="07:00" max="21:00">
+              </label>
+            </div>
             <label class="checkbox-container">
               <input type="checkbox" formControlName="isAvailable">
               Disponible

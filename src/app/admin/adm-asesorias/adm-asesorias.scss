@@ -228,8 +228,40 @@ li .info .role {
 
 .formulario-horario form {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  grid-template-columns: 1fr 1fr; /* Two columns */
+  gap: 1.5rem; /* Increased gap for better spacing */
+  align-items: flex-start; /* Align items to the top */
+}
+
+.days-of-week {
+  grid-column: 1 / 2; /* Occupy the first column */
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid #e0e0e0; /* Add a subtle border */
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.formulario-horario .checkbox-container {
+  display: flex;
+  flex-direction: row; /* Override the general label style */
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0;
+}
+
+.checkbox-container input[type="checkbox"] {
+  width: auto;
+  margin-top: 0;
+}
+
+.time-inputs {
+  grid-column: 2 / 3; /* Occupy the second column */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Space between start and end time inputs */
 }
 
 .formulario-horario label {
@@ -237,9 +269,8 @@ li .info .role {
   flex-direction: column;
 }
 
-.formulario-horario input[type="time"],
-.formulario-horario select {
-  padding: 0.9rem; /* Consistente con otros formularios */
+.formulario-horario input[type="time"] {
+  padding: 0.9rem;
   border: 1px solid #c9c9c9;
   border-radius: 6px;
   margin-top: 0.5rem;
@@ -256,21 +287,9 @@ li .info .role {
   outline: none;
 }
 
-
-.checkbox-container {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
-.checkbox-container input[type="checkbox"] {
-  width: auto;
-  margin-top: 0;
-}
-
 .formulario-horario .form-actions {
-  grid-column: span 2;
+  grid-column: span 2; /* Span across both columns */
+  display: flex;
   justify-content: flex-end;
   gap: 1rem;
   margin-top: 1.5rem;
