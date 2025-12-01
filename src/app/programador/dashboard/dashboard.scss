@@ -1,0 +1,36 @@
+.panel-programador {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.panel-programador h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.descripcion {
+  text-align: center;
+  color: #444;
+  margin-bottom: 2rem;
+}
+
+.opciones {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.opciones button {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  background: #005bbb;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.opciones button:hover {
+  background: #004799;
+}

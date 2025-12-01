@@ -1,0 +1,51 @@
+.perfil {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.perfil-header {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.perfil-header img {
+  width: 220px;
+  border-radius: 10px;
+}
+
+.perfil h2 {
+  margin: 0.5rem 0;
+}
+
+.especialidad {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.descripcion {
+  color: #555;
+  line-height: 1.5;
+  max-width: 600px;
+}
+
+.acciones {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.acciones button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  background: #005bbb;
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.acciones button:nth-child(2) {
+  background: #00a86b;
+}
