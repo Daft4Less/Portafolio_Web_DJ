@@ -10,6 +10,8 @@
     </div>
 
     <div class="tarjeta-acciones">
+      <button class="btn-accion btn-editar" (click)="onEditar()">Editar</button>
+      <button class="btn-accion btn-eliminar" (click)="onEliminar()">Eliminar</button>
       <a *ngIf="proyecto.linkGitHub" [href]="proyecto.linkGitHub" target="_blank" rel="noopener noreferrer" class="btn-accion">GitHub</a>
       <a *ngIf="proyecto.linkDemo" [href]="proyecto.linkDemo" target="_blank" rel="noopener noreferrer" class="btn-accion">Demo</a>
     </div>

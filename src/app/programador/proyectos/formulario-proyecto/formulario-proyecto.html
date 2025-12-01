@@ -44,7 +44,9 @@
     <input id="imagenUrl" type="url" formControlName="imagenUrl">
   </div>
 
-  <button type="submit" [disabled]="proyectoForm.invalid" class="btn-submit">Guardar Proyecto</button>
+  <button type="submit" [disabled]="proyectoForm.invalid" class="btn-submit">
+    {{ esModoEdicion ? 'Actualizar Proyecto' : 'Guardar Proyecto' }}
+  </button>
 
 </form>
 

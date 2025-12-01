@@ -15,6 +15,8 @@ export class Proyectos implements OnInit {
   proyectos: Proyecto[] = [];
   mostrarFormulario: boolean = false;
 
+  proyectoAEditar: Proyecto | undefined;
+
   constructor(private proyectosService: ProyectosService) {}
 
   ngOnInit(): void {
@@ -28,11 +30,25 @@ export class Proyectos implements OnInit {
   }
 
   toggleFormulario(): void {
+    this.proyectoAEditar = undefined;
     this.mostrarFormulario = !this.mostrarFormulario;
   }
 
   onProyectoAgregado(nuevoProyecto: Proyecto): void {
     this.cargarProyectos(); 
     this.mostrarFormulario = false;
+  }
+
+  onEliminarProyecto(nombreProyecto: string): void {
+    if (confirm(`¿Estás seguro de que quieres eliminar el proyecto "${nombreProyecto}"?`)) {
+      this.proyectosService.deleteProyecto(nombreProyecto).subscribe(() => {
+        this.cargarProyectos();
+      });
+    }
+  }
+
+  onEditarProyecto(proyecto: Proyecto): void {
+    this.proyectoAEditar = proyecto;
+    this.mostrarFormulario = true;
   }
 }

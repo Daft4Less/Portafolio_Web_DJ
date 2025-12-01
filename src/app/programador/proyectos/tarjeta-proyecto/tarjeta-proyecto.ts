@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface Proyecto {
@@ -19,4 +19,19 @@ export interface Proyecto {
 })
 export class TarjetaProyecto {
   @Input() proyecto?: Proyecto;
+  @Output() eliminarProyecto = new EventEmitter<string>();
+
+  @Output() editarProyecto = new EventEmitter<Proyecto>();
+
+  onEliminar(): void {
+    if (this.proyecto?.nombre) {
+      this.eliminarProyecto.emit(this.proyecto.nombre);
+    }
+  }
+
+  onEditar(): void {
+    if (this.proyecto) {
+      this.editarProyecto.emit(this.proyecto);
+    }
+  }
 }

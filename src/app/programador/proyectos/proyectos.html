@@ -8,12 +8,12 @@
   </div>
 
   
-  <app-formulario-proyecto *ngIf="mostrarFormulario" (proyectoAgregado)="onProyectoAgregado($event)"></app-formulario-proyecto>
+  <app-formulario-proyecto *ngIf="mostrarFormulario" [proyecto]="proyectoAEditar" (proyectoAgregado)="onProyectoAgregado($event)"></app-formulario-proyecto>
 
   <div class="lista-proyectos">
 
     
-    <app-tarjeta-proyecto *ngFor="let p of proyectos" [proyecto]="p"></app-tarjeta-proyecto>
+    <app-tarjeta-proyecto *ngFor="let p of proyectos" [proyecto]="p" (eliminarProyecto)="onEliminarProyecto($event)" (editarProyecto)="onEditarProyecto($event)"></app-tarjeta-proyecto>
 
     
     <p *ngIf="!proyectos || proyectos.length === 0" class="sin-proyectos">
