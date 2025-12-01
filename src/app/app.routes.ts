@@ -15,7 +15,7 @@ import { AdmAsesorias } from './admin/adm-asesorias/adm-asesorias';
 import { AdmDashboard } from './admin/adm-dashboard/adm-dashboard';
 
 export const routes: Routes = [
-    {path: '', component: Inicio},
+    {path: '', component: Login},
     {path: 'inicio', component: Inicio},
     {path: 'programadores', component: Programadores},
     {path: 'empleado', component: VerPerfil},

@@ -45,4 +45,18 @@ export class Login {
       }
     }
   }
+
+  async register() {
+    this.errorMessage = null;
+    try {
+      const userProfile = await this.authService.registerWithGoogle();
+      if (userProfile) {
+        // Assuming successful registration redirects to the home page or a profile setup page
+        this.router.navigate(['/inicio']); 
+      }
+    } catch (error: any) {
+      console.error('Error en el registro:', error);
+      this.errorMessage = 'Ocurrió un error durante el registro con Google.';
+    }
+  }
 }
