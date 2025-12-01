@@ -1,19 +1,21 @@
 .cabecera {
   width: 100%;
-  padding: 1rem 2.5rem;
+  height: 70px; /* Adjusted height */
+  padding: 0.75rem 2.5rem; /* Reduced vertical padding */
   background: #ffffff;
   border-bottom: 1px solid #e4e4e4;
 
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start; /* Changed to flex-start */
   align-items: center;
+  gap: 4rem; /* Added gap between logo and nav */
 
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .cabecera__logo h1 {
   margin: 0;
-  font-size: 1.6rem;
+  font-size: 1.4rem; /* Slightly reduced font size */
   font-weight: 700;
   color: #333;
   cursor: pointer;

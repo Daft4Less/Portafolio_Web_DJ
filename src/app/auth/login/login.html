@@ -1,19 +1,31 @@
 <section class="login">
 
-  <h2>Iniciar Sesión</h2>
-  <p class="descripcion">Accede con tu cuenta de Google</p>
+  <ng-container *ngIf="user$ | async as user; else showLogin">
+    <h2>Bienvenido, {{ user.displayName }}</h2>
+    <img [src]="user.photoURL" alt="Foto de perfil" class="profile-photo">
+    <div class="contenedor-boton">
+      <button class="btn-google" (click)="logout()">
+        Cerrar Sesión
+      </button>
+    </div>
+  </ng-container>
 
-  <div class="contenedor-boton">
-    <button class="btn-google" (click)="login()">
-      <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google">
-      Iniciar sesión con Google
-    </button>
-    
-    <button class="btn-google" (click)="register()">
-      <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google">
-      Registrarse con Google
-    </button>
-  </div>
+  <ng-template #showLogin>
+    <h2>Iniciar Sesión</h2>
+    <p class="descripcion">Accede con tu cuenta de Google</p>
+
+    <div class="contenedor-boton">
+      <button class="btn-google" (click)="login()">
+        <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google">
+        Iniciar sesión con Google
+      </button>
+      
+      <button class="btn-google" (click)="register()">
+        <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google">
+        Registrarse con Google
+      </button>
+    </div>
+  </ng-template>
 
   <div *ngIf="errorMessage" class="error-message">
     {{ errorMessage }}

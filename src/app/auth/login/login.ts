@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AutenticacionService } from '../../services/autenticacion.service';
+import { AutenticacionService, UserProfile } from '../../services/autenticacion.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -12,11 +13,14 @@ import { AutenticacionService } from '../../services/autenticacion.service';
 })
 export class Login {
   errorMessage: string | null = null;
+  user$: Observable<UserProfile | null>;
 
   constructor(
     private authService: AutenticacionService,
     private router: Router
-  ) {}
+  ) {
+    this.user$ = this.authService.getUsuarioActual();
+  }
 
   async login() {
     this.errorMessage = null;
@@ -57,6 +61,16 @@ export class Login {
     } catch (error: any) {
       console.error('Error en el registro:', error);
       this.errorMessage = 'Ocurrió un error durante el registro con Google.';
+    }
+  }
+
+  async logout() {
+    try {
+      await this.authService.logout();
+      // No redirection after logout, stay on the current page.
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      this.errorMessage = 'Ocurrió un error al cerrar sesión.';
     }
   }
 }
