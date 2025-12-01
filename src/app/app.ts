@@ -8,6 +8,11 @@ import { Observable, Subscription } from 'rxjs';
   selector: 'app-root',
   standalone: true,
   imports: [CommonModule, RouterOutlet],
+import { Header } from './shared/header/header';
+
+@Component({
+  selector: 'app-root',
+  imports: [RouterOutlet, Header],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
