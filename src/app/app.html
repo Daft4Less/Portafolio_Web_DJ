@@ -1,3 +1,40 @@
+<div style="padding: 20px; font-family: sans-serif;">
+
+  <!-- ESTADO: NO AUTENTICADO -->
+  <div *ngIf="!currentUser">
+    <h1>Bienvenido al Portafolio</h1>
+    <p>Por favor, regístrate o inicia sesión.</p>
+    
+    <!-- Botones de Acción -->
+    <div style="margin-top: 20px;">
+      <button (click)="onRegisterWithGoogle()" style="padding: 10px 15px; margin-right: 10px;">
+        Registrarse con Google
+      </button>
+      <button (click)="onSignInWithGoogle()" style="padding: 10px 15px;">
+        Iniciar Sesión con Google
+      </button>
+    </div>
+
+    <!-- Mensajes de Error -->
+    <div *ngIf="errorMessage" style="margin-top: 20px; color: red; border: 1px solid red; padding: 10px;">
+      <strong>Error:</strong> {{ errorMessage }}
+    </div>
+  </div>
+
+  <!-- ESTADO: SÍ AUTENTICADO -->
+  <div *ngIf="currentUser">
+    <h1>Bienvenido, {{ currentUser.displayName }}</h1>
+    <p>Has iniciado sesión correctamente.</p>
+    <ul>
+      <li><strong>Email:</strong> {{ currentUser.email }}</li>
+      <li><strong>Rol:</strong> {{ currentUser.role }}</li>
+    </ul>
+    <button (click)="logout()" style="padding: 10px 15px; margin-top: 10px;">
+      Cerrar Sesión
+    </button>
+  </div>
+
+</div>
 <app-header></app-header>
 <main>
   <router-outlet></router-outlet>

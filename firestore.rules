@@ -1,0 +1,42 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'Administrador';
+    }
+
+    // --- REGLAS PARA LA COLECCIÓN 'users' ---
+    match /users/{userId} {
+      allow get: if true;
+      allow list: if isAdmin();
+      allow create: if request.auth.uid == userId && request.resource.data.role == 'Usuario normal';
+      allow update: if (request.auth.uid == userId && request.resource.data.role == resource.data.role) || isAdmin();
+      allow delete: if isAdmin();
+
+      // --- REGLAS PARA LA SUBCOLECCIÓN 'projects' ---
+      match /projects/{projectId} {
+        allow read: if true;
+        allow write: if request.auth.uid == userId;
+      }
+    }
+
+    // --- REGLAS PARA LA COLECCIÓN 'asesorias' (Fase 4) ---
+    match /asesorias/{asesoriaId} {
+      // CREACIÓN: Cualquier usuario autenticado puede crear una solicitud.
+      allow create: if request.auth != null && request.resource.data.solicitanteId == request.auth.uid;
+
+      // LECTURA: El solicitante, el programador que recibe la solicitud, o un admin.
+      allow read: if request.auth.uid == resource.data.solicitanteId ||
+                     request.auth.uid == resource.data.programadorId ||
+                     isAdmin();
+
+      // ACTUALIZACIÓN: El programador que recibe la solicitud (para aprobar/rechazar) o un admin.
+      allow update: if request.auth.uid == resource.data.programadorId || isAdmin();
+
+      // BORRADO: Solo los administradores.
+      allow delete: if isAdmin();
+    }
+  }
+}
