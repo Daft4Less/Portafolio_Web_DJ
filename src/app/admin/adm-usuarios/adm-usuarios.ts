@@ -45,11 +45,16 @@ export class AdmUsuarios implements OnInit {
 
   selectUser(user: UserProfile): void {
     this.selectedUserSubject.next(user);
-    this.userForm.patchValue({
-      uid: user.uid,
-      displayName: user.displayName,
-      email: user.email,
-    });
+    try {
+      this.userForm.patchValue({
+        uid: user.uid,
+        displayName: user.displayName,
+        email: user.email,
+      });
+    } catch (error) {
+      console.error('Error al poblar el formulario de usuario:', error);
+      alert('Error al cargar los datos del usuario en el formulario. El modal se mostrará pero los campos pueden estar vacíos.');
+    }
     this.showModal = true; // Mostrar el modal al seleccionar
   }
 

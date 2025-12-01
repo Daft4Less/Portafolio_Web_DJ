@@ -84,20 +84,25 @@ export class AdmProgramadores implements OnInit, OnDestroy { // OnDestroy se man
 
   selectProgrammer(programmer: UserProfile): void {
     this.selectedProgrammerSubject.next(programmer);
-    this.programmerForm.patchValue({
-      uid: programmer.uid,
-      displayName: programmer.displayName,
-      email: programmer.email,
-      photoURL: programmer.photoURL,
-      role: programmer.role,
-      especialidad: programmer.especialidad || '',
-      descripcion: programmer.descripcion || '',
-      contacto: {
-        github: programmer.contacto?.github || '',
-        linkedin: programmer.contacto?.linkedin || '',
-        website: programmer.contacto?.website || ''
-      }
-    });
+    try {
+      this.programmerForm.patchValue({
+        uid: programmer.uid,
+        displayName: programmer.displayName,
+        email: programmer.email,
+        photoURL: programmer.photoURL,
+        role: programmer.role,
+        especialidad: programmer.especialidad || '',
+        descripcion: programmer.descripcion || '',
+        contacto: {
+          github: programmer.contacto?.github || '',
+          linkedin: programmer.contacto?.linkedin || '',
+          website: programmer.contacto?.website || ''
+        }
+      });
+    } catch (error) {
+      console.error('Error al poblar el formulario de programador:', error);
+      alert('Error al cargar los datos del programador en el formulario. El modal se mostrará pero los campos pueden estar vacíos.');
+    }
     // this.cancelScheduleEdit(); // ELIMINADO
     this.showModal = true;
   }

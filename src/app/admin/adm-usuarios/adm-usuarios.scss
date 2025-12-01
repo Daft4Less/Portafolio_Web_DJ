@@ -147,16 +147,8 @@ li .info .role {
   align-items: center;
   z-index: 1000;
   /* Animación */
-  opacity: 0;
-  visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
-
-.modal-overlay[style*='opacity: 1'] { /* Para que el *ngIf active la transición */
-  opacity: 1;
-  visibility: visible;
-}
-
 
 .modal-content {
   background-color: #ffffff;
@@ -169,14 +161,7 @@ li .info .role {
   max-height: 90vh;
   overflow-y: auto;
   /* Animación */
-  transform: translateY(-20px);
-  opacity: 0;
   transition: all 0.3s ease;
-}
-
-.modal-overlay[style*='opacity: 1'] .modal-content { /* Cuando el overlay está visible, el contenido se anima */
-  transform: translateY(0);
-  opacity: 1;
 }
 
 .modal-header {
