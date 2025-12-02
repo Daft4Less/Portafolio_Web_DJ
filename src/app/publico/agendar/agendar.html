@@ -1,17 +1,39 @@
 <section class="agendar-page">
   <div class="formulario-container">
-    <div *ngIf="!solicitudEnviada">
-      <h3>Completa tu Solicitud de Asesoría</h3>
+    <div *ngIf="programador && !solicitudEnviada; else noProgramadorOrSent">
+      <h3>Agenda una Asesoría con {{ programador.displayName }}</h3>
+
+      <div class="programmer-schedule-display" *ngIf="programadorSchedules && programadorSchedules.length > 0">
+        <h4>Horario General del Programador</h4>
+        <ul>
+          <li *ngFor="let schedule of programadorSchedules">
+            {{ diasSemana[schedule.dayOfWeek] }}: {{ schedule.startTime }} - {{ schedule.endTime }}
+            <span *ngIf="!schedule.isAvailable">(No Disponible)</span>
+          </li>
+        </ul>
+      </div>
+      <div *ngIf="!programadorSchedules || programadorSchedules.length === 0" class="no-general-schedule">
+        <p>No se ha establecido un horario general para este programador.</p>
+      </div>
+
       <form [formGroup]="agendamientoForm" (ngSubmit)="onSubmit()" class="form-agendar">
         
         <div class="form-group">
-          <label for="fecha">Fecha Deseada</label>
-          <input id="fecha" type="date" formControlName="fecha">
+          <label for="fecha">Fecha Disponible</label>
+          <select id="fecha" formControlName="fecha">
+            <option value="" disabled>Selecciona una fecha</option>
+            <option *ngFor="let date of availableDates" [value]="date">{{ date | date:'fullDate' }}</option>
+          </select>
         </div>
 
         <div class="form-group">
-          <label for="hora">Hora Deseada</label>
-          <input id="hora" type="time" formControlName="hora">
+          <label for="hora">Hora Disponible</label>
+          <p *ngIf="fullDayScheduleRange" class="schedule-range">{{ fullDayScheduleRange }}</p>
+          <select id="hora" formControlName="hora">
+            <option value="" disabled *ngIf="availableTimesForSelectedDate.length > 0">Selecciona una hora</option>
+            <option value="" disabled *ngIf="availableTimesForSelectedDate.length === 0">No hay horas disponibles</option>
+            <option *ngFor="let time of availableTimesForSelectedDate" [value]="time">{{ time }}</option>
+          </select>
         </div>
 
         <div class="form-group">
@@ -19,15 +41,25 @@
           <textarea id="comentario" formControlName="comentario" rows="4" placeholder="Ej: Me gustaría discutir las mejores prácticas en React..."></textarea>
         </div>
 
-        <button type="submit" [disabled]="agendamientoForm.invalid" class="btn-submit">Enviar Solicitud</button>
+        <button type="submit" [disabled]="agendamientoForm.invalid || !availableDates.length" class="btn-submit">Enviar Solicitud</button>
       </form>
     </div>
 
-    <div *ngIf="solicitudEnviada" class="confirmacion">
-      <h3>¡Solicitud Enviada!</h3>
-      <p>El programador revisará tu solicitud y te contactará pronto.</p>
-      <button (click)="resetearFormulario()" class="btn-nueva-solicitud">Agendar otra asesoría</button>
-    </div>
+    <ng-template #noProgramadorOrSent>
+      <div *ngIf="solicitudEnviada" class="confirmacion">
+        <h3>¡Solicitud Enviada!</h3>
+        <p>El programador revisará tu solicitud y te contactará pronto.</p>
+        <button (click)="resetearFormulario()" class="btn-nueva-solicitud">Agendar otra asesoría</button>
+      </div>
+      <div *ngIf="!programador" class="mensaje-error">
+        <h3>Error al cargar programador</h3>
+        <p>No se pudo cargar la información del programador o no se especificó un ID de programador.</p>
+      </div>
+       <div *ngIf="programador && !availableDates.length && !solicitudEnviada" class="mensaje-error">
+        <h3>No hay horarios disponibles</h3>
+        <p>El programador {{ programador.displayName }} no tiene horarios de asesoría disponibles en este momento.</p>
+      </div>
+    </ng-template>
 
   </div>
 </section>

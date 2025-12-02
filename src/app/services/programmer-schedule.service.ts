@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector, runInInjectionContext } from '@angular/core';
 import { Firestore, doc, getDoc, updateDoc, DocumentData, DocumentSnapshot } from '@angular/fire/firestore';
 import { Observable, from } from 'rxjs'; // Added Observable and from
 import { map } from 'rxjs/operators'; // Added map operator
@@ -9,7 +9,7 @@ import { ProgrammerSchedule } from '../models/programmer-schedule.model';
 })
 export class ProgrammerScheduleService {
 
-  constructor(private firestore: Firestore) { }
+  constructor(private firestore: Firestore, private injector: Injector) { } // Inject Injector
 
   private getUserDocRef(programmerUid: string) {
     return doc(this.firestore, `users/${programmerUid}`);
@@ -17,7 +17,7 @@ export class ProgrammerScheduleService {
 
   async addSchedule(programmerUid: string, schedule: Omit<ProgrammerSchedule, 'id'>): Promise<void> {
     const userDocRef = this.getUserDocRef(programmerUid);
-    const userDoc = await getDoc(userDocRef);
+    const userDoc = await runInInjectionContext(this.injector, () => getDoc(userDocRef)); // Wrap getDoc
     if (!userDoc.exists()) {
       throw new Error('User document not found!');
     }
@@ -37,7 +37,7 @@ export class ProgrammerScheduleService {
 
   async updateSchedule(programmerUid: string, scheduleId: string, schedule: Partial<ProgrammerSchedule>): Promise<void> {
     const userDocRef = this.getUserDocRef(programmerUid);
-    const userDoc = await getDoc(userDocRef);
+    const userDoc = await runInInjectionContext(this.injector, () => getDoc(userDocRef)); // Wrap getDoc
     if (!userDoc.exists()) {
       throw new Error('User document not found!');
     }
@@ -57,7 +57,7 @@ export class ProgrammerScheduleService {
 
   async deleteSchedule(programmerUid: string, scheduleId: string): Promise<void> {
     const userDocRef = this.getUserDocRef(programmerUid);
-    const userDoc = await getDoc(userDocRef);
+    const userDoc = await runInInjectionContext(this.injector, () => getDoc(userDocRef)); // Wrap getDoc
     if (!userDoc.exists()) {
       throw new Error('User document not found!');
     }
@@ -72,14 +72,16 @@ export class ProgrammerScheduleService {
 
   getSchedules(programmerUid: string): Observable<ProgrammerSchedule[]> {
     const userDocRef = this.getUserDocRef(programmerUid);
-    return from(getDoc(userDocRef)).pipe(
-      map((docSnap: DocumentSnapshot<DocumentData>) => {
-        if (docSnap.exists()) {
-          const userData = docSnap.data();
-          return (userData['schedules'] || []) as ProgrammerSchedule[];
-        }
-        return [];
-      })
+    return runInInjectionContext(this.injector, () => // Wrap getDoc in runInInjectionContext
+      from(getDoc(userDocRef)).pipe(
+        map((docSnap: DocumentSnapshot<DocumentData>) => {
+          if (docSnap.exists()) {
+            const userData = docSnap.data();
+            return (userData['schedules'] || []) as ProgrammerSchedule[];
+          }
+          return [];
+        })
+      )
     );
   }
 

@@ -6,7 +6,7 @@
         <h1>{{ perfil.displayName }}</h1>
         <p class="role">{{ perfil.role }}</p>
       </div>
-      <a [routerLink]="['/publico/agendar']" [queryParams]="{ programadorId: perfil.uid }" class="btn btn-primary">
+      <a [routerLink]="['/agendar']" [queryParams]="{ programadorId: perfil.uid }" class="btn btn-primary">
         Agendar Asesoría
       </a>
     </div>
