@@ -22,7 +22,8 @@
         <div class="card-content">
           <h3>{{ programador.displayName }}</h3>
           <p class="specialty">{{ programador.especialidad }}</p>
-          <a [routerLink]="['/publico/ver-perfil', programador.uid]" class="btn-profile">Ver Perfil</a>
+          <a [routerLink]="['/ver-perfil', programador.uid]" class="btn-profile">Ver Perfil</a>
+          <a routerLink="/agendar" class="btn btn-secondary">Agendar Asesoría</a>
         </div>
       </div>
     </ng-container>

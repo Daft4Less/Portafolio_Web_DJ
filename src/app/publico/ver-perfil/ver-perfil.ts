@@ -1,11 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { switchMap, map } from 'rxjs/operators'; // Import map
+import { Observable, of, combineLatest } from 'rxjs'; // Import combineLatest
 
 import { ProgramadoresService, PerfilProgramador } from '../../services/programadores.service';
-import { Project } from '../../models/portfolio.model'; // Asegúrate que la ruta sea correcta
+import { ProgrammerScheduleService } from '../../services/programmer-schedule.service'; // Import service
+import { Project } from '../../models/portfolio.model';
+import { ProgrammerSchedule } from '../../models/programmer-schedule.model'; // Import model
+
+interface PerfilProgramadorConHorario extends PerfilProgramador {
+  schedules: ProgrammerSchedule[];
+}
 
 @Component({
   selector: 'app-ver-perfil',
@@ -16,19 +22,30 @@ import { Project } from '../../models/portfolio.model'; // Asegúrate que la rut
 })
 export class VerPerfil implements OnInit {
   
-  perfil$: Observable<PerfilProgramador | null>;
+  perfilConHorario$: Observable<PerfilProgramadorConHorario | null>;
 
   constructor(
     private route: ActivatedRoute,
-    private programadoresService: ProgramadoresService
+    private programadoresService: ProgramadoresService,
+    private programmerScheduleService: ProgrammerScheduleService // Inject service
   ) {
-    this.perfil$ = this.route.paramMap.pipe(
+    this.perfilConHorario$ = this.route.paramMap.pipe(
       switchMap(params => {
         const id = params.get('id');
         if (id) {
-          return this.programadoresService.getProgramadorById(id);
+          const perfil$ = this.programadoresService.getProgramadorById(id);
+          const schedules$ = this.programmerScheduleService.getSchedules(id);
+
+          return combineLatest([perfil$, schedules$]).pipe(
+            map(([perfil, schedules]) => {
+              if (perfil) {
+                return { ...perfil, schedules };
+              }
+              return null;
+            })
+          );
         }
-        return of(null); // Si no hay ID, no hay perfil
+        return of(null);
       })
     );
   }

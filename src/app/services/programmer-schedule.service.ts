@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Firestore, doc, getDoc, updateDoc, DocumentData } from '@angular/fire/firestore';
+import { Firestore, doc, getDoc, updateDoc, DocumentData, DocumentSnapshot } from '@angular/fire/firestore';
+import { Observable, from } from 'rxjs'; // Added Observable and from
+import { map } from 'rxjs/operators'; // Added map operator
 import { ProgrammerSchedule } from '../models/programmer-schedule.model';
 
 @Injectable({
@@ -67,4 +69,18 @@ export class ProgrammerScheduleService {
 
     await updateDoc(userDocRef, { schedules: updatedSchedules });
   }
+
+  getSchedules(programmerUid: string): Observable<ProgrammerSchedule[]> {
+    const userDocRef = this.getUserDocRef(programmerUid);
+    return from(getDoc(userDocRef)).pipe(
+      map((docSnap: DocumentSnapshot<DocumentData>) => {
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
+          return (userData['schedules'] || []) as ProgrammerSchedule[];
+        }
+        return [];
+      })
+    );
+  }
+
 }

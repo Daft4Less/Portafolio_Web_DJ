@@ -1,159 +1,236 @@
 .profile-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  
-  // Botones generales
-  .btn {
-    padding: 0.8rem 1.5rem;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    }
-  }
-
-  .btn-primary {
-    background-color: #007bff;
-    color: white;
-  }
-  
-  .btn-secondary {
-    background-color: #6c757d;
-    color: white;
-  }
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 
   .profile-header {
-    background: #343a40;
-    color: white;
-    padding: 3rem 2rem;
-    border-radius: 0 0 20px 20px;
-    margin-bottom: 3rem;
+    background-color: #f8f9fa;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #e9ecef;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    margin: -2rem -2rem 2rem -2rem; // Adjust to match parent padding
 
     .header-content {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 2rem;
-      max-width: 1000px;
-      margin: 0 auto;
-      flex-wrap: wrap;
-    }
+      flex-wrap: wrap; // Allow wrapping on smaller screens
 
-    .profile-photo {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      border: 5px solid #495057;
-    }
+      .header-info {
+        h1 {
+          font-size: 2.5rem;
+          color: #343a40;
+          margin: 0 0 0.5rem 0;
+        }
 
-    .header-info {
-      flex-grow: 1;
-      
-      h1 {
-        font-size: 2.8rem;
-        margin: 0;
-        font-weight: 700;
+        .role {
+          font-size: 1.1rem;
+          color: #007bff;
+          font-weight: 500;
+        }
       }
-      .role {
-        font-size: 1.3rem;
-        color: #00d9ff;
-        margin: 0.25rem 0 0.5rem 0;
-      }
-      .specialty {
-        font-size: 1.1rem;
-        color: #ced4da;
-      }
-    }
 
-    .btn-primary {
-      margin-left: auto;
-      flex-shrink: 0;
+      .btn-primary {
+        background-color: #007bff;
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background-color 0.2s;
+
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
     }
   }
 
   .profile-content {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    padding: 0 2rem;
-
-    @media (min-width: 992px) {
-      grid-template-columns: 2.5fr 1fr;
-    }
-  }
-
-  .profile-section {
-    margin-bottom: 2.5rem;
-
-    h2 {
-      font-size: 1.8rem;
-      color: #343a40;
-      border-bottom: 3px solid #007bff;
-      padding-bottom: 0.5rem;
-      margin-bottom: 1.5rem;
-    }
-  }
-  
-  .skills-section {
-    background-color: #f8f9fa;
-    padding: 1.5rem;
-    border-radius: 10px;
-
-    .skills-tags {
+    .profile-details {
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
+      align-items: flex-start;
+      margin-bottom: 2.5rem;
+      gap: 2rem; // Space between photo and text
 
-      .tag {
-        background-color: #e9ecef;
-        color: #495057;
-        padding: 0.5em 1em;
-        border-radius: 20px;
-        font-size: 0.9rem;
+      .profile-photo {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: center;
+        border: 4px solid #e9ecef;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        flex-shrink: 0; // Prevent photo from shrinking
+      }
+
+      .details-text {
+        flex-grow: 1;
+
+        p {
+          font-size: 1rem;
+          color: #495057;
+          line-height: 1.6;
+          margin-bottom: 0.75rem;
+
+          strong {
+            color: #343a40;
+          }
+        }
+
+        h3 {
+          font-size: 1.4rem;
+          color: #343a40;
+          margin-top: 1.5rem;
+          margin-bottom: 1rem;
+          border-bottom: 2px solid #007bff;
+          padding-bottom: 0.5rem;
+          display: inline-block; // Only underline the text
+        }
+
+        a {
+          color: #007bff;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
       }
     }
-  }
 
-  .projects-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    .schedule-section,
+    .projects-section {
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #e9ecef;
 
-    @media (min-width: 768px) {
-      grid-template-columns: repeat(2, 1fr);
+      h2 {
+        font-size: 2rem;
+        color: #343a40;
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+
+        li {
+          background-color: #f1f7fe;
+          border: 1px solid #d4e3fd;
+          border-left: 5px solid #007bff;
+          padding: 0.8rem 1.2rem;
+          border-radius: 8px;
+          color: #343a40;
+          font-size: 0.95rem;
+          display: flex;
+          align-items: center;
+
+          &:before {
+            content: "🕒"; // Clock emoji for schedule
+            margin-right: 0.8rem;
+            font-size: 1.2rem;
+          }
+        }
+      }
+
+      .project-card {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid #f0f0f0;
+
+        h3 {
+          font-size: 1.3rem;
+          color: #343a40;
+          margin-top: 0;
+          margin-bottom: 0.75rem;
+        }
+
+        p {
+          font-size: 0.95rem;
+          color: #6c757d;
+          margin-bottom: 0.5rem;
+
+          strong {
+            color: #343a40;
+          }
+        }
+
+        a {
+          font-size: 0.9rem;
+          word-break: break-all; // Break long URLs
+        }
+      }
     }
     
-    .project-card {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      overflow: hidden;
+    .no-schedule, .no-projects {
+      text-align: center;
+      padding: 1.5rem;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      margin-top: 2.5rem;
 
-      .project-image {
-        width: 100%;
-        height: 180px;
-        object-fit: cover;
-      }
-      .project-info {
-        padding: 1.5rem;
-        h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
-        p { color: #6c757d; margin-bottom: 1rem; }
+      p {
+        font-size: 1.1rem;
+        color: #6c757d;
       }
     }
   }
 }
 
-.message-container {
-  text-align: center;
-  padding: 4rem;
-  font-size: 1.2rem;
-  color: #6c757d;
+// Responsive adjustments
+@media (max-width: 768px) {
+  .profile-page {
+    padding: 1rem;
+    margin: 1rem auto;
+  }
+
+  .profile-header {
+    margin: -1rem -1rem 1rem -1rem; // Adjust for smaller padding
+  }
+
+  .profile-content .profile-details {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.5rem;
+  }
+
+  .profile-content .profile-details .details-text {
+    p {
+      text-align: left; // Keep text left-aligned
+    }
+  }
+  
+  .profile-content .projects-section .project-card,
+  .profile-content .schedule-section ul li {
+    padding: 1rem;
+  }
+  
+  .profile-content .schedule-section ul {
+    grid-template-columns: 1fr; // Single column on small screens
+  }
+}
+
+@media (max-width: 576px) {
+  .profile-header .header-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .profile-header .header-content .btn-primary {
+    width: 100%;
+  }
 }
