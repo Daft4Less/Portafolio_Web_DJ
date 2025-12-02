@@ -30,13 +30,13 @@ export class Login {
         
         switch (userProfile.role) {
           case 'Administrador':
-            this.router.navigate(['/admin/dashboard']);
+            this.router.navigate(['/admin/adm-programadores']); // Direct to Gestión Programadores
             break;
           case 'Programador':
-            this.router.navigate(['/programador/dashboard']);
+            this.router.navigate(['/programador/proyectos']); // Direct to Mis Proyectos
             break;
           default:
-            this.router.navigate(['/inicio']);
+            this.router.navigate(['/inicio']); // Default to /inicio for normal users
             break;
         }
       }
