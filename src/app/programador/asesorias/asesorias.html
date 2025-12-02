@@ -14,11 +14,14 @@
       <div *ngFor="let asesoria of asesorias" class="tarjeta-asesoria">
         <!-- El contenido de la tarjeta se mantiene como referencia para el backend -->
         <h3>Solicitud de {{ asesoria.solicitanteNombre }}</h3>
-        <p><strong>Fecha:</strong> {{ asesoria.fecha | date: 'dd/MM/yyyy' }}</p>
-        <p><strong>Estado:</strong> {{ asesoria.estado }}</p>
+        <p><strong>Fecha:</strong> {{ asesoria.fecha.toDate() | date: 'dd/MM/yyyy' }}</p>
+        <p><strong>Estado:</strong> <span class="estado-{{asesoria.estado}}">{{ asesoria.estado }}</span></p>
         <div class="acciones">
-          <button *ngIf="asesoria.estado === 'pendiente'" (click)="aceptarAsesoria(asesoria.id)">Aceptar</button>
-          <button *ngIf="asesoria.estado === 'aceptada'" (click)="finalizarAsesoria(asesoria.id)">Finalizar</button>
+          <ng-container *ngIf="asesoria.estado === 'pendiente'">
+            <button class="btn-aceptar" (click)="aceptarAsesoria(asesoria.id!)">Aceptar</button>
+            <button class="btn-rechazar" (click)="rechazarAsesoria(asesoria.id!)">Rechazar</button>
+          </ng-container>
+          <button *ngIf="asesoria.estado === 'aprobada'" class="btn-finalizar" (click)="finalizarAsesoria(asesoria.id!)">Finalizar</button>
         </div>
       </div>
     </div>

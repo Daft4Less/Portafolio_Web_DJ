@@ -5,6 +5,7 @@ import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
 import { Observable, from, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { ProgrammerSchedule } from '../models/programmer-schedule.model';
+import { Project } from '../models/portfolio.model';
 
 
 export interface UserProfile {
@@ -18,6 +19,7 @@ export interface UserProfile {
   descripcion?: string;
   contacto?: any; 
   schedules?: ProgrammerSchedule[];
+  projects?: Project[];
 }
 
 @Injectable({

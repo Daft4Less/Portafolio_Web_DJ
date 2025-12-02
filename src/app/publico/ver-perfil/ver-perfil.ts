@@ -1,31 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { map, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
-// Interfaces locales para los datos
-interface Proyecto {
-  id: string;
-  nombre: string;
-  descripcion: string;
-  imagenUrl: string;
-  enlace: string;
-}
-
-interface PerfilProgramador {
-  uid: string;
-  displayName: string;
-  photoURL: string;
-  role: string;
-  especialidad: string;
-  biografia: string;
-  tecnologias: string[];
-  proyectos: Proyecto[];
-}
-
-// Simulación de una "base de datos" de programadores
-const PROGRAMADORES_DB: PerfilProgramador[] = [];
+import { ProgramadoresService, PerfilProgramador } from '../../services/programadores.service';
+import { Project } from '../../models/portfolio.model'; // Asegúrate que la ruta sea correcta
 
 @Component({
   selector: 'app-ver-perfil',
@@ -36,15 +16,19 @@ const PROGRAMADORES_DB: PerfilProgramador[] = [];
 })
 export class VerPerfil implements OnInit {
   
-  perfil$: Observable<PerfilProgramador | undefined>;
+  perfil$: Observable<PerfilProgramador | null>;
 
-  constructor(private route: ActivatedRoute) {
+  constructor(
+    private route: ActivatedRoute,
+    private programadoresService: ProgramadoresService
+  ) {
     this.perfil$ = this.route.paramMap.pipe(
-      map(params => params.get('id')),
-      switchMap(id => {
-        // En una app real, aquí se llamaría a un servicio: this.programadorService.getById(id)
-        const perfilEncontrado = PROGRAMADORES_DB.find(p => p.uid === id);
-        return of(perfilEncontrado);
+      switchMap(params => {
+        const id = params.get('id');
+        if (id) {
+          return this.programadoresService.getProgramadorById(id);
+        }
+        return of(null); // Si no hay ID, no hay perfil
       })
     );
   }

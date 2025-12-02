@@ -8,6 +8,6 @@ export interface Asesoria {
   
   fecha: Timestamp; 
   comentario: string; 
-  estado: 'pendiente' | 'aprobada' | 'rechazada'; 
+  estado: 'pendiente' | 'aprobada' | 'rechazada' | 'finalizada'; 
   respuestaProgramador?: string; 
 }

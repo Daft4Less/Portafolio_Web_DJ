@@ -1,14 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
-// Interfaz local para la data de la asesoría, simulando el modelo real.
-interface Asesoria {
-  id: string;
-  solicitanteNombre: string;
-  fecha: Date;
-  comentario: string;
-  estado: 'pendiente' | 'aceptada' | 'finalizada' | 'rechazada';
-}
+import { Asesoria } from '../../models/asesoria.model';
+import { AsesoriasService } from '../../services/asesorias.service';
 
 @Component({
   selector: 'app-asesorias',
@@ -17,29 +13,55 @@ interface Asesoria {
   templateUrl: './asesorias.html',
   styleUrls: ['./asesorias.scss'],
 })
-export class Asesorias implements OnInit {
-
-  // Data de ejemplo para simular lo que vendría del backend.
-  // Se inicializa como un array vacío para que el backend lo llene.
+export class Asesorias implements OnInit, OnDestroy {
+  
   asesorias: Asesoria[] = [];
+  private unsubscribe$ = new Subject<void>();
 
-  constructor() { }
+  constructor(private asesoriasService: AsesoriasService) { }
 
   ngOnInit(): void {
-    // La carga de datos simulados se elimina.
-    // El backend deberá llamar a un servicio para llenar este array.
+    this.cargarAsesorias();
   }
 
-  // Métodos que el backend deberá implementar.
-  aceptarAsesoria(id: string): void {
-    console.log(`Backend debe implementar: Aceptar asesoría con ID: ${id}`);
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
-  finalizarAsesoria(id: string): void {
-    console.log(`Backend debe implementar: Finalizar asesoría con ID: ${id}`);
+  cargarAsesorias(): void {
+    this.asesoriasService.getAsesorias().pipe(
+      takeUntil(this.unsubscribe$)
+    ).subscribe((data: Asesoria[]) => {
+      this.asesorias = data;
+    });
   }
 
-  rechazarAsesoria(id: string): void {
-    console.log(`Backend debe implementar: Rechazar asesoría con ID: ${id}`);
+  async aceptarAsesoria(id: string): Promise<void> {
+    try {
+      await this.asesoriasService.updateEstadoAsesoria(id, 'aprobada');
+      this.cargarAsesorias(); // Recargar la lista
+    } catch (error) {
+      console.error('Error al aceptar la asesoría:', error);
+      // Manejar el error en la UI si es necesario
+    }
+  }
+
+  async finalizarAsesoria(id: string): Promise<void> {
+    try {
+      await this.asesoriasService.updateEstadoAsesoria(id, 'finalizada');
+      this.cargarAsesorias(); // Recargar la lista
+    } catch (error) {
+      console.error('Error al finalizar la asesoría:', error);
+    }
+  }
+
+  async rechazarAsesoria(id: string): Promise<void> {
+    try {
+      await this.asesoriasService.updateEstadoAsesoria(id, 'rechazada');
+      this.cargarAsesorias(); // Recargar la lista
+    } catch (error) {
+      console.error('Error al rechazar la asesoría:', error);
+    }
   }
 }

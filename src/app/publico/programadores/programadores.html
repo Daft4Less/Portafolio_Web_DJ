@@ -6,21 +6,24 @@
     </p>
     <div class="search-bar">
       <i class="fas fa-search search-icon"></i>
-      <input type="text" [formControl]="campoBusqueda" placeholder="Buscar programadores...">
+      <input type="text" [formControl]="searchControl" placeholder="Buscar programadores...">
     </div>
   </div>
 
   <div class="programadores-grid">
-    <ng-container *ngIf="(programadoresFiltrados$ | async) as programadores">
+    <ng-container *ngIf="(filteredProgrammers$ | async) as programadores">
       <div *ngIf="programadores.length === 0" class="no-results">
         <p>No hay programadores disponibles o no se encontraron resultados.</p>
       </div>
       
       <!-- El contenido de las tarjetas será generado dinámicamente por el backend -->
       <div *ngFor="let programador of programadores" class="programmer-card">
-        <h3>{{ programador.displayName }}</h3>
-        <p>{{ programador.role }}</p>
-        <a [routerLink]="['/publico/ver-perfil', programador.uid]" class="btn-profile">Ver Perfil</a>
+        <img [src]="programador.photoURL" alt="Foto de {{programador.displayName}}" class="profile-pic">
+        <div class="card-content">
+          <h3>{{ programador.displayName }}</h3>
+          <p class="specialty">{{ programador.especialidad }}</p>
+          <a [routerLink]="['/publico/ver-perfil', programador.uid]" class="btn-profile">Ver Perfil</a>
+        </div>
       </div>
     </ng-container>
   </div>

@@ -1,19 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { Observable } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import { startWith, map, switchMap, takeUntil } from 'rxjs/operators';
 
-// Interfaz para el perfil del programador
-interface Programador {
-  uid: string;
-  displayName: string;
-  photoURL: string;
-  role: string;
-  especialidad: string;
-  tecnologias: string[];
-}
+import { ProgramadoresService } from '../../services/programadores.service';
+import { UserProfile } from '../../services/autenticacion.service';
 
 @Component({
   selector: 'app-programadores',
@@ -22,34 +15,48 @@ interface Programador {
   templateUrl: './programadores.html',
   styleUrls: ['./programadores.scss'],
 })
-export class Programadores implements OnInit {
+export class Programadores implements OnInit, OnDestroy {
   
-  listaCompletaProgramadores: Programador[] = []; // Vacío, el backend lo llenará
-  programadoresFiltrados$: Observable<Programador[]>;
+  private allProgrammers = new BehaviorSubject<UserProfile[]>([]);
+  allProgrammers$ = this.allProgrammers.asObservable();
+  
+  filteredProgrammers$: Observable<UserProfile[]>;
 
-  campoBusqueda = new FormControl('');
+  searchControl = new FormControl('');
+  private unsubscribe$ = new Subject<void>();
 
-  constructor() {
-    this.programadoresFiltrados$ = this.campoBusqueda.valueChanges.pipe(
+  constructor(private programmersService: ProgramadoresService) {
+    this.filteredProgrammers$ = this.searchControl.valueChanges.pipe(
       startWith(''),
-      map(termino => this.filtrarProgramadores(termino || ''))
+      switchMap(term => this.allProgrammers$.pipe(
+        map((programmers: UserProfile[]) => this.filterProgrammers(programmers, term || ''))
+      ))
     );
   }
 
   ngOnInit(): void {
-    // La carga de datos simulados se elimina.
-    // El backend deberá llamar a un servicio para llenar este array.
+    this.programmersService.getAllProgramadores().pipe(
+      takeUntil(this.unsubscribe$)
+    ).subscribe((programmers: UserProfile[]) => {
+      this.allProgrammers.next(programmers);
+    });
+  }
+  
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
-  private filtrarProgramadores(termino: string): Programador[] {
-    if (!termino) {
-      return this.listaCompletaProgramadores;
+  private filterProgrammers(programmers: UserProfile[], term: string): UserProfile[] {
+    if (!term) {
+      return programmers;
     }
-    const terminoLower = termino.toLowerCase();
-    return this.listaCompletaProgramadores.filter(p => 
-      p.displayName.toLowerCase().includes(terminoLower) ||
-      p.especialidad.toLowerCase().includes(terminoLower) ||
-      p.tecnologias.some(t => t.toLowerCase().includes(terminoLower))
+    const lowerCaseTerm = term.toLowerCase();
+    return programmers.filter(p => 
+      p.displayName.toLowerCase().includes(lowerCaseTerm) ||
+      (p.especialidad && p.especialidad.toLowerCase().includes(lowerCaseTerm))
+      // Nota: El filtrado por tecnologías se omite porque 'tecnologias' no es un
+      // campo directo del perfil de usuario en el modelo de datos actual.
     );
   }
 }

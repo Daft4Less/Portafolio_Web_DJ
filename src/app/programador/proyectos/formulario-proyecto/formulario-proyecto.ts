@@ -21,14 +21,14 @@ export class FormularioProyecto implements OnInit, OnChanges {
 
   constructor(private fb: FormBuilder) {
     this.proyectoForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]], // Corregido a 'name'
-      description: ['', [Validators.required, Validators.maxLength(500)]], // Corregido a 'description'
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      description: ['', [Validators.required, Validators.maxLength(500)]],
       technologies: ['', Validators.required],
-      repositoryLink: ['', Validators.required], // Corregido a 'repositoryLink'
-      deploymentLink: [''], // Corregido a 'deploymentLink'
-      section: ['Proyectos Académicos', Validators.required], // Añadir 'section' y valor por defecto
-      participationType: ['Frontend', Validators.required], // Añadir 'participationType' y valor por defecto
-      userId: [''], // Añadir 'userId'
+      repositoryLink: [''], // Campo opcional
+      deploymentLink: [''], // Campo opcional
+      section: ['Proyectos Académicos', Validators.required],
+      participationType: ['Frontend', Validators.required],
+      userId: [''],
       imagenUrl: [''],
     });
   }
