@@ -33,6 +33,12 @@ export class Agendar implements OnInit, OnDestroy {
 
   private unsubscribe$ = new Subject<void>();
 
+  private formatTime(date: Date): string {
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -88,6 +94,8 @@ export class Agendar implements OnInit, OnDestroy {
   }
 
   processSchedules(): void {
+    console.log('processSchedules: Starting schedule processing.');
+    console.log('processSchedules: programadorSchedules =', this.programadorSchedules);
     this.availableDates = [];
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Normalize to start of day
@@ -103,13 +111,17 @@ export class Agendar implements OnInit, OnDestroy {
       const daySchedules = this.programadorSchedules.filter(
         s => s.dayOfWeek === currentDayOfWeek && s.isAvailable
       );
+      console.log(`processSchedules: For date ${currentDate.toISOString().split('T')[0]} (Day of Week: ${currentDayOfWeek}), found daySchedules:`, daySchedules);
 
       if (daySchedules.length > 0) {
         const dateString = currentDate.toISOString().split('T')[0]; // Format YYYY-MM-DD
         scheduleMap[dateString] = [];
 
-        daySchedules.forEach(schedule => {
-          // Generate time slots within start and end time (e.g., every 30 mins)
+        daySchedules.forEach((schedule: ProgrammerSchedule) => {
+          console.log(`processSchedules: Processing schedule for ${dateString}: ${schedule.startTime}-${schedule.endTime}`);
+          let now = new Date(); // Capture current time once per function call
+          let isToday = currentDate.toDateString() === now.toDateString();
+
           let [startHour, startMinute] = schedule.startTime.split(':').map(Number);
           let [endHour, endMinute] = schedule.endTime.split(':').map(Number);
 
@@ -119,83 +131,152 @@ export class Agendar implements OnInit, OnDestroy {
           let endTime = new Date(currentDate);
           endTime.setHours(endHour, endMinute, 0, 0);
 
+          console.log(`processSchedules: Initial currentTime: ${this.formatTime(currentTime)}, endTime: ${this.formatTime(endTime)}`);
+          console.log(`processSchedules: isToday: ${isToday}, now: ${this.formatTime(now)}`);
+
           while (currentTime.getTime() < endTime.getTime()) {
-            // Only add if the slot is in the future
-            if (currentTime.getTime() > new Date().getTime()) { // Corrected logic
-                const timeSlot = currentTime.toTimeString().slice(0, 5);
-                scheduleMap[dateString].push(timeSlot);
+            console.log(`processSchedules: Inside while loop. Current time: ${this.formatTime(currentTime)}`);
+            // Only add if the slot is in the future relative to 'now' if it's today,
+            // or always add if it's a future date.
+            const isSlotValid = isToday ? currentTime.getTime() > now.getTime() : true;
+            console.log(`processSchedules: isSlotValid condition evaluated to: ${isSlotValid}`);
+
+            if (isSlotValid) {
+                const slotStartTime = new Date(currentTime);
+                currentTime.setMinutes(currentTime.getMinutes() + 60);
+                const slotEndTime = new Date(currentTime);
+
+                const formattedSlotStartTime = this.formatTime(slotStartTime);
+                const formattedSlotEndTime = this.formatTime(slotEndTime);
+
+                // Ensure the slot doesn't exceed the schedule's end time
+                console.log(`processSchedules: Checking slot: ${formattedSlotStartTime}-${formattedSlotEndTime}. slotEndTime: ${this.formatTime(slotEndTime)}, schedule endTime: ${this.formatTime(endTime)}`);
+                if (slotEndTime.getTime() <= endTime.getTime()) {
+                    const timeRange = `${formattedSlotStartTime}-${formattedSlotEndTime}`;
+                    scheduleMap[dateString].push(timeRange);
+                    console.log(`processSchedules: Pushed timeRange: ${timeRange}`);
+                } else {
+                    console.log(`processSchedules: Slot ${formattedSlotStartTime}-${formattedSlotEndTime} exceeds schedule endTime. Breaking loop.`);
+                    // If the next 60 min slot goes beyond the schedule's endTime,
+                    // we should break the loop as no more valid slots can be formed.
+                    break;
+                }
+            } else {
+                currentTime.setMinutes(currentTime.getMinutes() + 60); // Still advance for past slots if not valid
+                console.log(`processSchedules: Slot not valid (past time), advancing currentTime to ${this.formatTime(currentTime)}`);
             }
-            currentTime.setMinutes(currentTime.getMinutes() + 30); // 30-minute slots
           }
         });
         
         // Remove duplicates and sort times
         scheduleMap[dateString] = [...new Set(scheduleMap[dateString])].sort();
+        console.log(`processSchedules: Final scheduleMap[${dateString}]:`, scheduleMap[dateString]);
 
         if (scheduleMap[dateString].length > 0) {
             this.availableDates.push(dateString);
+            console.log(`processSchedules: Added ${dateString} to availableDates.`);
         }
       }
     }
     // Set first available date if exists
+    console.log('processSchedules: All dates processed. availableDates:', this.availableDates);
     if (this.availableDates.length > 0) {
       this.agendamientoForm.get('fecha')?.setValue(this.availableDates[0]);
+      console.log('processSchedules: Setting fecha to', this.availableDates[0]);
       // Manually trigger update for times if initial date is set
       this.updateAvailableTimes(this.availableDates[0]); // Explicitly call updateAvailableTimes
     } else {
+        console.log('processSchedules: No available dates. Disabling fecha and hora controls.');
         this.agendamientoForm.get('fecha')?.disable();
         this.agendamientoForm.get('hora')?.disable();
     }
   }
 
   updateAvailableTimes(selectedDate: string): void {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    console.log('updateAvailableTimes: Starting for selectedDate:', selectedDate);
+    const selectedDateObj = new Date(selectedDate + 'T00:00:00');
+    selectedDateObj.setHours(0, 0, 0, 0); // Normalize to start of day
+    console.log('updateAvailableTimes: selectedDateObj after setHours:', selectedDateObj);
+    console.log('updateAvailableTimes: selectedDateObj.getDay():', selectedDateObj.getDay());
 
-    const currentDate = new Date(selectedDate);
-    currentDate.setHours(0, 0, 0, 0);
-
-    const daySchedules = this.programadorSchedules.filter(
-      s => s.dayOfWeek === currentDate.getDay() && s.isAvailable
+    const daySchedules: ProgrammerSchedule[] = this.programadorSchedules.filter(
+      s => s.dayOfWeek === selectedDateObj.getDay() && s.isAvailable
     );
+    console.log('updateAvailableTimes: Filtered daySchedules:', daySchedules);
 
     let times: string[] = [];
-    daySchedules.forEach(schedule => {
+    let now = new Date(); // Capture current time once per function call
+    let isToday = selectedDateObj.toDateString() === now.toDateString();
+
+    daySchedules.forEach((schedule: ProgrammerSchedule) => {
+        console.log(`updateAvailableTimes: Processing schedule: ${schedule.startTime}-${schedule.endTime}`);
         let [startHour, startMinute] = schedule.startTime.split(':').map(Number);
         let [endHour, endMinute] = schedule.endTime.split(':').map(Number);
 
-        let currentTime = new Date(currentDate);
+        let currentTime = new Date(selectedDateObj);
         currentTime.setHours(startHour, startMinute, 0, 0);
 
-        let endTime = new Date(currentDate);
+        let endTime = new Date(selectedDateObj);
         endTime.setHours(endHour, endMinute, 0, 0);
 
+        console.log(`updateAvailableTimes: Initial currentTime: ${this.formatTime(currentTime)}, endTime: ${this.formatTime(endTime)}`);
+        console.log(`updateAvailableTimes: isToday: ${isToday}, now: ${this.formatTime(now)}`);
+
         while (currentTime.getTime() < endTime.getTime()) {
-            // Only add if the slot is in the future
-            if (currentTime.getTime() > new Date().getTime()) { // Corrected logic
-                const timeSlot = currentTime.toTimeString().slice(0, 5);
-                times.push(timeSlot);
+            console.log(`updateAvailableTimes: Inside while loop. Current time: ${this.formatTime(currentTime)}`);
+            // Only add if the slot is in the future relative to 'now' if it's today,
+            // or always add if it's a future date.
+            const isSlotValid = isToday ? currentTime.getTime() > now.getTime() : true;
+            console.log(`updateAvailableTimes: isSlotValid condition evaluated to: ${isSlotValid}`);
+
+            if (isSlotValid) {
+                const slotStartTime = new Date(currentTime);
+                currentTime.setMinutes(currentTime.getMinutes() + 60);
+                const slotEndTime = new Date(currentTime);
+
+                const formattedSlotStartTime = this.formatTime(slotStartTime);
+                const formattedSlotEndTime = this.formatTime(slotEndTime);
+
+                // Ensure the slot doesn't exceed the schedule's end time
+                console.log(`updateAvailableTimes: Checking slot: ${formattedSlotStartTime}-${formattedSlotEndTime}. slotEndTime: ${this.formatTime(slotEndTime)}, schedule endTime: ${this.formatTime(endTime)}`);
+                if (slotEndTime.getTime() <= endTime.getTime()) {
+                    const timeRange = `${formattedSlotStartTime}-${formattedSlotEndTime}`;
+                    times.push(timeRange);
+                    console.log(`updateAvailableTimes: Pushed timeRange: ${timeRange}`);
+                } else {
+                    console.log(`updateAvailableTimes: Slot ${formattedSlotStartTime}-${formattedSlotEndTime} exceeds schedule endTime. Breaking loop.`);
+                    // If the next 60 min slot goes beyond the schedule's endTime,
+                    // we should break the loop as no more valid slots can be formed.
+                    break;
+                }
+            } else {
+                currentTime.setMinutes(currentTime.getMinutes() + 60); // Still advance for past slots
+                console.log(`updateAvailableTimes: Slot not valid (past time), advancing currentTime to ${this.formatTime(currentTime)}`);
             }
-            currentTime.setMinutes(currentTime.getMinutes() + 30); // 30-minute slots
         }
     });
     this.availableTimesForSelectedDate = [...new Set(times)].sort();
+    console.log('updateAvailableTimes: Final availableTimesForSelectedDate:', this.availableTimesForSelectedDate);
 
     // Calculate full day schedule range
     if (daySchedules.length > 0) {
         const earliestStart = daySchedules.reduce((min, s) => s.startTime < min ? s.startTime : min, daySchedules[0].startTime);
         const latestEnd = daySchedules.reduce((max, s) => s.endTime > max ? s.endTime : max, daySchedules[0].endTime);
         this.fullDayScheduleRange = `Disponibilidad: ${earliestStart} - ${latestEnd}`;
+        console.log('updateAvailableTimes: fullDayScheduleRange:', this.fullDayScheduleRange);
     } else {
         this.fullDayScheduleRange = '';
+        console.log('updateAvailableTimes: No daySchedules, fullDayScheduleRange is empty.');
     }
 
     if (this.availableTimesForSelectedDate.length > 0) {
       this.agendamientoForm.get('hora')?.enable();
       this.agendamientoForm.get('hora')?.setValue(this.availableTimesForSelectedDate[0]);
+      console.log('updateAvailableTimes: hora enabled and set to:', this.availableTimesForSelectedDate[0]);
     } else {
       this.agendamientoForm.get('hora')?.disable();
       this.agendamientoForm.get('hora')?.setValue('');
+      console.log('updateAvailableTimes: hora disabled, no available times.');
     }
   }
 
