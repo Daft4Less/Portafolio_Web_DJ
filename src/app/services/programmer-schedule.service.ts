@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, collectionData, doc, updateDoc, deleteDoc, addDoc, CollectionReference, DocumentData, query, orderBy } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Firestore, doc, getDoc, updateDoc, DocumentData } from '@angular/fire/firestore';
 import { ProgrammerSchedule } from '../models/programmer-schedule.model';
 
 @Injectable({
@@ -10,28 +9,62 @@ export class ProgrammerScheduleService {
 
   constructor(private firestore: Firestore) { }
 
-  private getSchedulesCollection(programmerUid: string): CollectionReference<DocumentData> {
-    return collection(this.firestore, `users/${programmerUid}/schedules`);
+  private getUserDocRef(programmerUid: string) {
+    return doc(this.firestore, `users/${programmerUid}`);
   }
 
-  getProgrammerSchedules(programmerUid: string): Observable<ProgrammerSchedule[]> {
-    const schedulesCollection = this.getSchedulesCollection(programmerUid);
-    const q = query(schedulesCollection, orderBy('dayOfWeek'), orderBy('startTime')); // Order schedules
-    return collectionData(q, { idField: 'id' }) as Observable<ProgrammerSchedule[]>;
+  async addSchedule(programmerUid: string, schedule: Omit<ProgrammerSchedule, 'id'>): Promise<void> {
+    const userDocRef = this.getUserDocRef(programmerUid);
+    const userDoc = await getDoc(userDocRef);
+    if (!userDoc.exists()) {
+      throw new Error('User document not found!');
+    }
+
+    const userData = userDoc.data();
+    const schedules = (userData['schedules'] || []) as ProgrammerSchedule[];
+
+    const newSchedule: ProgrammerSchedule = {
+      ...schedule,
+      id: new Date().getTime().toString() // Simple unique ID
+    };
+
+    const updatedSchedules = [...schedules, newSchedule];
+    
+    await updateDoc(userDocRef, { schedules: updatedSchedules });
   }
 
-  addSchedule(programmerUid: string, schedule: Omit<ProgrammerSchedule, 'id'>): Promise<any> {
-    const schedulesCollection = this.getSchedulesCollection(programmerUid);
-    return addDoc(schedulesCollection, schedule);
+  async updateSchedule(programmerUid: string, scheduleId: string, schedule: Partial<ProgrammerSchedule>): Promise<void> {
+    const userDocRef = this.getUserDocRef(programmerUid);
+    const userDoc = await getDoc(userDocRef);
+    if (!userDoc.exists()) {
+      throw new Error('User document not found!');
+    }
+
+    const userData = userDoc.data();
+    const schedules = (userData['schedules'] || []) as ProgrammerSchedule[];
+
+    const updatedSchedules = schedules.map(s => {
+      if (s.id === scheduleId) {
+        return { ...s, ...schedule, id: s.id }; // Ensure ID is not overwritten
+      }
+      return s;
+    });
+
+    await updateDoc(userDocRef, { schedules: updatedSchedules });
   }
 
-  updateSchedule(programmerUid: string, scheduleId: string, schedule: Partial<ProgrammerSchedule>): Promise<void> {
-    const scheduleDocRef = doc(this.firestore, `users/${programmerUid}/schedules/${scheduleId}`);
-    return updateDoc(scheduleDocRef, schedule);
-  }
+  async deleteSchedule(programmerUid: string, scheduleId: string): Promise<void> {
+    const userDocRef = this.getUserDocRef(programmerUid);
+    const userDoc = await getDoc(userDocRef);
+    if (!userDoc.exists()) {
+      throw new Error('User document not found!');
+    }
 
-  deleteSchedule(programmerUid: string, scheduleId: string): Promise<void> {
-    const scheduleDocRef = doc(this.firestore, `users/${programmerUid}/schedules/${scheduleId}`);
-    return deleteDoc(scheduleDocRef);
+    const userData = userDoc.data();
+    const schedules = (userData['schedules'] || []) as ProgrammerSchedule[];
+
+    const updatedSchedules = schedules.filter(s => s.id !== scheduleId);
+
+    await updateDoc(userDocRef, { schedules: updatedSchedules });
   }
 }

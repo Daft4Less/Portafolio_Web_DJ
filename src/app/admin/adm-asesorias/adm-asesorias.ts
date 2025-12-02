@@ -1,12 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdministradoresService } from '../../services/administradores.service';
 import { AutenticacionService, UserProfile } from '../../services/autenticacion.service';
 import { ProgrammerScheduleService } from '../../services/programmer-schedule.service';
 import { ProgrammerSchedule } from '../../models/programmer-schedule.model';
-import { Observable, BehaviorSubject, Subscription } from 'rxjs';
-import { map, filter, switchMap } from 'rxjs/operators';
-import { ReactiveFormsModule, FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-adm-asesorias',
@@ -15,21 +15,18 @@ import { ReactiveFormsModule, FormGroup, FormBuilder, Validators, FormArray } fr
   templateUrl: './adm-asesorias.html',
   styleUrls: ['./adm-asesorias.scss'],
 })
-export class AdmAsesorias implements OnInit, OnDestroy {
+export class AdmAsesorias implements OnInit {
   allUsers$: Observable<UserProfile[]>;
   programmers$: Observable<UserProfile[]>;
 
   private selectedProgrammerSubject = new BehaviorSubject<UserProfile | null>(null);
   selectedProgrammer$ = this.selectedProgrammerSubject.asObservable();
-  private selectedProgrammerSubscription: Subscription | undefined;
 
-  programmerSchedules$: Observable<ProgrammerSchedule[]> | undefined;
   scheduleForm!: FormGroup;
   private selectedScheduleSubject = new BehaviorSubject<ProgrammerSchedule | null>(null);
   selectedSchedule$ = this.selectedScheduleSubject.asObservable();
 
   showModal: boolean = false;
-
   daysOfWeekArray = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
   constructor(
@@ -44,32 +41,21 @@ export class AdmAsesorias implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const daysOfWeekControls = this.daysOfWeekArray.map(() => this.fb.control(false));
-
     this.scheduleForm = this.fb.group({
       id: [null],
       daysOfWeek: this.fb.group(
-        this.daysOfWeekArray.reduce((acc, _, index) => {
-          return { ...acc, [index]: this.fb.control(false) };
-        }, {})
+        this.daysOfWeekArray.reduce((acc, _, index) => ({ ...acc, [index]: this.fb.control(false) }), {})
       ),
       startTime: ['', Validators.required],
       endTime: ['', Validators.required],
       isAvailable: [true]
     });
-
-    this.programmerSchedules$ = this.selectedProgrammer$.pipe(
-      filter(programmer => !!programmer),
-      switchMap(programmer => this.programmerScheduleService.getProgrammerSchedules(programmer!.uid))
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.selectedProgrammerSubscription?.unsubscribe();
   }
 
   selectProgrammer(programmer: UserProfile): void {
-    this.selectedProgrammerSubject.next(programmer);
+    // Ensure schedules is an array
+    const programmerWithSchedules = { ...programmer, schedules: programmer.schedules || [] };
+    this.selectedProgrammerSubject.next(programmerWithSchedules);
     this.cancelScheduleEdit();
     this.showModal = true;
   }
@@ -88,7 +74,6 @@ export class AdmAsesorias implements OnInit, OnDestroy {
       isAvailable: schedule.isAvailable
     });
 
-    // Disable day selection when editing
     this.scheduleForm.get('daysOfWeek')?.disable();
   }
 
@@ -104,20 +89,23 @@ export class AdmAsesorias implements OnInit, OnDestroy {
       return;
     }
 
-    const formValue = this.scheduleForm.getRawValue(); // Use getRawValue to include disabled controls
+    const formValue = this.scheduleForm.getRawValue();
     const { id, startTime, endTime, isAvailable } = formValue;
 
     try {
-      if (id) { // Modo edición
-        const scheduleToUpdate: ProgrammerSchedule = {
-          ...this.selectedScheduleSubject.getValue()!,
-          startTime,
-          endTime,
-          isAvailable
-        };
+      if (id) { // Edit Mode
+        const scheduleToUpdate = { startTime, endTime, isAvailable };
         await this.programmerScheduleService.updateSchedule(programmer.uid, id, scheduleToUpdate);
+        
+        // Refresh local data
+        const updatedSchedules = programmer.schedules?.map(s => 
+          s.id === id ? { ...s, ...scheduleToUpdate } : s
+        ) || [];
+        this.selectedProgrammerSubject.next({ ...programmer, schedules: updatedSchedules });
+        
         alert('Horario actualizado exitosamente.');
-      } else { // Modo agregar
+
+      } else { // Add Mode
         const selectedDays = Object.keys(formValue.daysOfWeek)
           .filter(key => formValue.daysOfWeek[key])
           .map(Number);
@@ -136,6 +124,11 @@ export class AdmAsesorias implements OnInit, OnDestroy {
           };
           await this.programmerScheduleService.addSchedule(programmer.uid, newSchedule);
         }
+
+        // To refresh, we must re-fetch the user to get the new IDs.
+        const updatedProgrammer = await this.administradoresService.getUser(programmer.uid);
+        this.selectedProgrammerSubject.next(updatedProgrammer);
+
         alert('Horario(s) agregado(s) exitosamente.');
       }
       this.cancelScheduleEdit();
@@ -147,14 +140,19 @@ export class AdmAsesorias implements OnInit, OnDestroy {
 
   async deleteSchedule(scheduleId: string): Promise<void> {
     const programmer = this.selectedProgrammerSubject.getValue();
-    if (!programmer) {
-      alert('No hay programador seleccionado.');
+    if (!programmer || !scheduleId) {
+      alert('No hay programador o horario seleccionado.');
       return;
     }
 
     if (confirm('¿Estás seguro de que quieres eliminar este horario?')) {
       try {
         await this.programmerScheduleService.deleteSchedule(programmer.uid, scheduleId);
+
+        // Refresh local data
+        const updatedSchedules = programmer.schedules?.filter(s => s.id !== scheduleId) || [];
+        this.selectedProgrammerSubject.next({ ...programmer, schedules: updatedSchedules });
+
         alert('Horario eliminado exitosamente.');
       } catch (error) {
         console.error('Error al eliminar horario:', error);

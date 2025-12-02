@@ -4,6 +4,7 @@ import { Auth, GoogleAuthProvider, signInWithPopup, User, authState } from '@ang
 import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
 import { Observable, from, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { ProgrammerSchedule } from '../models/programmer-schedule.model';
 
 
 export interface UserProfile {
@@ -16,6 +17,7 @@ export interface UserProfile {
   especialidad?: string;
   descripcion?: string;
   contacto?: any; 
+  schedules?: ProgrammerSchedule[];
 }
 
 @Injectable({

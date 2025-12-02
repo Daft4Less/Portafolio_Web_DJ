@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, collectionData, doc, updateDoc, deleteDoc, DocumentData, CollectionReference } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, doc, updateDoc, deleteDoc, DocumentData, CollectionReference, getDoc } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { UserProfile } from './autenticacion.service';
 
@@ -28,5 +28,15 @@ export class AdministradoresService {
   deleteUser(uid: string): Promise<void> {
     const userDocRef = doc(this.firestore, `users/${uid}`);
     return deleteDoc(userDocRef);
+  }
+
+  async getUser(uid: string): Promise<UserProfile> {
+    const userDocRef = doc(this.firestore, `users/${uid}`);
+    const docSnap = await getDoc(userDocRef);
+    if (docSnap.exists()) {
+      return { uid: docSnap.id, ...docSnap.data() } as UserProfile;
+    } else {
+      throw new Error('User not found!');
+    }
   }
 }

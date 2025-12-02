@@ -20,7 +20,7 @@ service cloud.firestore {
         allow read: if true;
         allow write: if request.auth.uid == userId;
       }
-    }
+}
 
     // --- REGLAS PARA LA COLECCIÓN 'asesorias' (Fase 4) ---
     match /asesorias/{asesoriaId} {

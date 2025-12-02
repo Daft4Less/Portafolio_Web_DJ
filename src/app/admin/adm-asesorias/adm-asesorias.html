@@ -35,7 +35,7 @@
 
       <div class="seccion-horarios">
         <h3>Horarios de Disponibilidad</h3>
-        <ng-container *ngIf="programmerSchedules$ | async as schedules">
+        <ng-container *ngIf="(selectedProgrammer$ | async)?.schedules as schedules">
           <div *ngIf="schedules.length === 0" class="mensaje-lista">
             <p>Este programador no tiene horarios registrados.</p>
           </div>
