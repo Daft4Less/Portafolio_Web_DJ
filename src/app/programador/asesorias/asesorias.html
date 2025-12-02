@@ -1,14 +1,26 @@
-<section class="asesorias">
-
+<section class="asesorias-page">
   <h2>Mis Asesorías</h2>
   <p class="descripcion">
     Revisa las solicitudes de asesoría que los usuarios han enviado.
   </p>
 
-  <div class="lista-asesorias">
+  <div class="contenido">
+    <div *ngIf="!asesorias || asesorias.length === 0" class="mensaje-lista">
+      <p>No tienes solicitudes de asesoría.</p>
+    </div>
 
-    <p class="sin-asesorias">Aún no tienes solicitudes de asesoría.</p>
-
+    <div class="lista-asesorias" *ngIf="asesorias && asesorias.length > 0">
+      <!-- El contenido de la lista será generado dinámicamente por el backend -->
+      <div *ngFor="let asesoria of asesorias" class="tarjeta-asesoria">
+        <!-- El contenido de la tarjeta se mantiene como referencia para el backend -->
+        <h3>Solicitud de {{ asesoria.solicitanteNombre }}</h3>
+        <p><strong>Fecha:</strong> {{ asesoria.fecha | date: 'dd/MM/yyyy' }}</p>
+        <p><strong>Estado:</strong> {{ asesoria.estado }}</p>
+        <div class="acciones">
+          <button *ngIf="asesoria.estado === 'pendiente'" (click)="aceptarAsesoria(asesoria.id)">Aceptar</button>
+          <button *ngIf="asesoria.estado === 'aceptada'" (click)="finalizarAsesoria(asesoria.id)">Finalizar</button>
+        </div>
+      </div>
+    </div>
   </div>
-
 </section>

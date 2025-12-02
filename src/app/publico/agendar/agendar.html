@@ -1,34 +1,33 @@
-<section class="agendar">
+<section class="agendar-page">
+  <div class="formulario-container">
+    <div *ngIf="!solicitudEnviada">
+      <h3>Completa tu Solicitud de Asesoría</h3>
+      <form [formGroup]="agendamientoForm" (ngSubmit)="onSubmit()" class="form-agendar">
+        
+        <div class="form-group">
+          <label for="fecha">Fecha Deseada</label>
+          <input id="fecha" type="date" formControlName="fecha">
+        </div>
 
-  <h2>Agendar Asesoría</h2>
+        <div class="form-group">
+          <label for="hora">Hora Deseada</label>
+          <input id="hora" type="time" formControlName="hora">
+        </div>
 
-  <form class="form-agendar">
+        <div class="form-group">
+          <label for="comentario">¿Qué tema te gustaría tratar?</label>
+          <textarea id="comentario" formControlName="comentario" rows="4" placeholder="Ej: Me gustaría discutir las mejores prácticas en React..."></textarea>
+        </div>
 
-    <label>
-      Programador:
-      <select>
-        <option>Seleccione un programador</option>
-        <option>Programador 1</option>
-        <option>Programador 2</option>
-      </select>
-    </label>
+        <button type="submit" [disabled]="agendamientoForm.invalid" class="btn-submit">Enviar Solicitud</button>
+      </form>
+    </div>
 
-    <label>
-      Fecha:
-      <input type="date">
-    </label>
+    <div *ngIf="solicitudEnviada" class="confirmacion">
+      <h3>¡Solicitud Enviada!</h3>
+      <p>El programador revisará tu solicitud y te contactará pronto.</p>
+      <button (click)="resetearFormulario()" class="btn-nueva-solicitud">Agendar otra asesoría</button>
+    </div>
 
-    <label>
-      Hora:
-      <input type="time">
-    </label>
-
-    <label>
-      Motivo:
-      <textarea rows="3" placeholder="Opcional..."></textarea>
-    </label>
-
-    <button type="submit">Enviar solicitud</button>
-  </form>
-
+  </div>
 </section>

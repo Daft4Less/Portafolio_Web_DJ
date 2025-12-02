@@ -1,53 +1,48 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TarjetaProyecto, Proyecto } from './tarjeta-proyecto/tarjeta-proyecto';
+import { TarjetaProyecto } from './tarjeta-proyecto/tarjeta-proyecto';
 import { FormularioProyecto } from './formulario-proyecto/formulario-proyecto';
-import { ProyectosService } from '../../services/proyectos';
+// import { Project } from '../../../models/portfolio.model'; // Se comenta para evitar errores de path
 
 @Component({
   selector: 'app-proyectos',
   standalone: true,
-  imports: [CommonModule, TarjetaProyecto, FormularioProyecto],
+  imports: [CommonModule, TarjetaProyecto, FormularioProyecto], 
   templateUrl: './proyectos.html',
-  styleUrl: './proyectos.scss',
+  styleUrls: ['./proyectos.scss'],
 })
 export class Proyectos implements OnInit {
-  proyectos: Proyecto[] = [];
+  proyectos: any[] = []; // Array vacío, se usa `any` temporalmente
   mostrarFormulario: boolean = false;
+  proyectoAEditar: any | undefined;
 
-  proyectoAEditar: Proyecto | undefined;
-
-  constructor(private proyectosService: ProyectosService) {}
+  constructor() {} 
 
   ngOnInit(): void {
-    this.cargarProyectos();
-  }
-
-  cargarProyectos(): void {
-    this.proyectosService.getProyectos().subscribe(proyectos => {
-      this.proyectos = proyectos;
-    });
+    // Aquí el backend developer debe llamar al servicio para cargar los proyectos.
+    // Ejemplo: this.proyectosService.getProyectos().subscribe(data => this.proyectos = data);
   }
 
   toggleFormulario(): void {
     this.proyectoAEditar = undefined;
     this.mostrarFormulario = !this.mostrarFormulario;
   }
+  
+  onCancelarFormulario(): void {
+    this.mostrarFormulario = false;
+    this.proyectoAEditar = undefined;
+  }
 
-  onProyectoAgregado(nuevoProyecto: Proyecto): void {
-    this.cargarProyectos(); 
+  onProyectoGuardado(proyecto: any): void {
+    console.log('Backend debe implementar la lógica para guardar/editar:', proyecto);
     this.mostrarFormulario = false;
   }
 
-  onEliminarProyecto(nombreProyecto: string): void {
-    if (confirm(`¿Estás seguro de que quieres eliminar el proyecto "${nombreProyecto}"?`)) {
-      this.proyectosService.deleteProyecto(nombreProyecto).subscribe(() => {
-        this.cargarProyectos();
-      });
-    }
+  onEliminarProyecto(idProyecto: string): void {
+    console.log('Backend debe implementar la lógica para eliminar con ID:', idProyecto);
   }
 
-  onEditarProyecto(proyecto: Proyecto): void {
+  onEditarProyecto(proyecto: any): void {
     this.proyectoAEditar = proyecto;
     this.mostrarFormulario = true;
   }

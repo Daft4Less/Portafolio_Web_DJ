@@ -1,21 +1,17 @@
-<div *ngIf="proyecto" class="tarjeta">
-  <img *ngIf="proyecto.imagenUrl" [src]="proyecto.imagenUrl" alt="Imagen del proyecto {{ proyecto.nombre }}" class="tarjeta-imagen">
-  
+<div *ngIf="proyecto" class="tarjeta-proyecto">  
   <div class="tarjeta-contenido">
-    <h3 class="tarjeta-titulo">{{ proyecto.nombre }}</h3>
-    <p class="tarjeta-descripcion">{{ proyecto.descripcion }}</p>
+    <h3>{{ proyecto.name }}</h3>
+    <p>{{ proyecto.description }}</p>
 
-    <div class="tecnologias">
-      <span *ngFor="let tec of proyecto.tecnologias" class="tecnologia">{{ tec }}</span>
-    </div>
-
-    <div class="tarjeta-acciones">
-      <button class="btn-accion btn-editar" (click)="onEditar()">Editar</button>
-      <button class="btn-accion btn-eliminar" (click)="onEliminar()">Eliminar</button>
-      <a *ngIf="proyecto.linkGitHub" [href]="proyecto.linkGitHub" target="_blank" rel="noopener noreferrer" class="btn-accion">GitHub</a>
-      <a *ngIf="proyecto.linkDemo" [href]="proyecto.linkDemo" target="_blank" rel="noopener noreferrer" class="btn-accion">Demo</a>
+    <div class="tarjeta-footer">
+        <div class="acciones-edicion">
+            <button class="btn-accion btn-editar" (click)="onEditar()">
+                Editar
+            </button>
+            <button class="btn-accion btn-eliminar" (click)="onEliminar()">
+                Eliminar
+            </button>
+        </div>
     </div>
   </div>
 </div>
-
-

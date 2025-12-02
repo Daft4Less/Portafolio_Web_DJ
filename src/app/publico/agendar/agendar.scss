@@ -1,44 +1,193 @@
-.agendar {
-  max-width: 500px;
+.agendar-page {
+  max-width: 1000px;
   margin: 2rem auto;
-  padding: 1rem;
-}
+  padding: 2rem;
 
-.agendar h2 {
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
+  .contenido {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
 
-.form-agendar {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
+    @media (min-width: 768px) {
+      grid-template-columns: 1fr 1.5fr;
+    }
+  }
 
-label {
-  display: flex;
-  flex-direction: column;
-  font-size: 0.95rem;
-  color: #444;
-}
+  .perfil-programador {
+    text-align: center;
+    background-color: #f8f9fa;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 
-input, select, textarea {
-  padding: 0.6rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 0.95rem;
-}
+    .perfil-foto {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 4px solid #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      margin-bottom: 1rem;
+    }
 
-button {
-  padding: 0.7rem;
-  font-size: 1rem;
-  background: #005bbb;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
+    h2 {
+      font-size: 1.8rem;
+      color: #343a40;
+      margin-bottom: 0.5rem;
+    }
 
-button:hover {
-  background: #004999;
+    .perfil-rol {
+      font-size: 1.1rem;
+      color: #007bff;
+      font-weight: 500;
+    }
+  }
+
+  .horarios-disponibles {
+    background-color: #f8f9fa;
+    padding: 2rem;
+    border-radius: 12px;
+    
+    h3 {
+      font-size: 1.4rem;
+      color: #495057;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 0.5rem;
+    }
+
+    .lista-horarios {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+
+      .item-horario {
+        background-color: #ffffff;
+        padding: 0.8rem 1.2rem;
+        border-radius: 6px;
+        font-size: 1rem;
+        color: #333;
+        border: 1px solid #e9ecef;
+      }
+    }
+  }
+
+  .formulario-container {
+    background-color: #ffffff;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+
+    h3 {
+      text-align: center;
+      font-size: 1.6rem;
+      color: #343a40;
+      margin-bottom: 2rem;
+    }
+
+    .form-agendar {
+      .form-group {
+        margin-bottom: 1.5rem;
+
+        label {
+          display: block;
+          margin-bottom: 0.5rem;
+          font-weight: 600;
+          color: #495057;
+        }
+
+        input, textarea {
+          width: 100%;
+          padding: 0.8rem 1rem;
+          border: 1px solid #ced4da;
+          border-radius: 5px;
+          font-size: 1rem;
+          box-sizing: border-box;
+
+          &:focus {
+            outline: none;
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+          }
+        }
+
+        .error-messages {
+          color: #e74c3c;
+          font-size: 0.875rem;
+          margin-top: 0.4rem;
+        }
+      }
+
+      .btn-submit {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+
+        &:disabled {
+          background-color: #a0c9f1;
+          cursor: not-allowed;
+        }
+
+        &:not(:disabled):hover {
+          background-color: #0056b3;
+        }
+      }
+    }
+  }
+
+  .confirmacion {
+    text-align: center;
+    padding: 2rem;
+
+    .fa-check-circle {
+      font-size: 5rem;
+      color: #28a745;
+      margin-bottom: 1.5rem;
+    }
+
+    h3 {
+      font-size: 2rem;
+      color: #343a40;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: #6c757d;
+      margin-bottom: 2rem;
+    }
+
+    .btn-nueva-solicitud {
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 1rem;
+    }
+
+    .link-volver {
+      font-size: 1rem;
+      color: #007bff;
+      text-decoration: none;
+      &:hover { text-decoration: underline; }
+    }
+  }
+
+  .mensaje-error {
+    text-align: center;
+    padding: 2rem;
+    background-color: #fbebed;
+    color: #c0392b;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+  }
 }

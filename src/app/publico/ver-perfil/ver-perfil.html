@@ -1,17 +1,24 @@
-<section class="perfil">
-  <div class="perfil-header">
-    
-    <div>
-      <h2>Nombre del Programador</h2>
-      <p class="especialidad">Especialidad: Frontend Developer</p>
-      <p class="descripcion">
-        Descripción breve del programador, sus habilidades, experiencia y áreas donde destaca.
-      </p>
+<div class="profile-page" *ngIf="perfil$ | async as perfil; else loadingOrError">
+  
+  <header class="profile-header">
+    <div class="header-content">
+      <div class="header-info">
+        <h1>{{ perfil.displayName }}</h1>
+        <p class="role">{{ perfil.role }}</p>
+      </div>
+      <a [routerLink]="['/publico/agendar']" [queryParams]="{ programadorId: perfil.uid }" class="btn btn-primary">
+        Agendar Asesoría
+      </a>
     </div>
-  </div>
+  </header>
 
-  <div class="acciones">
-    <button>Ver proyectos</button>
-    <button routerLink="/agendar">Agendar asesoría</button>
+  <main class="profile-content">
+    <p>Cargando detalles del perfil...</p>
+  </main>
+</div>
+
+<ng-template #loadingOrError>
+  <div class="message-container">
+    <p>Cargando perfil del programador...</p>
   </div>
-</section>
+</ng-template>
