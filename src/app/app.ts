@@ -1,14 +1,16 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, HostListener } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AutenticacionService, UserProfile } from './services/autenticacion.service';
 import { Observable, Subscription } from 'rxjs';
 import { Header } from './shared/header/header';
+import { NotificationComponent } from './shared/notification/notification';
+import { NotificationService } from './services/notification';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, Header],
+  imports: [CommonModule, RouterOutlet, Header, NotificationComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
@@ -18,14 +20,48 @@ export class AppComponent implements OnInit, OnDestroy {
   currentUser: UserProfile | null = null;
   errorMessage: string | null = null;
 
-  constructor(private autenticacion: AutenticacionService) {
+  constructor(
+    private autenticacion: AutenticacionService,
+    private notificationService: NotificationService
+  ) {
     this.user$ = this.autenticacion.getUsuarioActual();
   }
 
   ngOnInit() {
     this.userSubscription = this.user$.subscribe(user => {
       this.currentUser = user;
+      if (user) {
+        // Usamos un pequeño retraso para dar tiempo a que la vista se cargue.
+        setTimeout(() => this.revisarNotificacionesPorRol(user), 100);
+      }
     });
+  }
+
+  // Escucha cambios en el localStorage desde OTRAS pestañas
+  @HostListener('window:storage', ['$event'])
+  onStorageChange(event: StorageEvent): void {
+    // Revisa cualquier notificación relevante cuando el storage cambia
+    if (this.currentUser && event.key?.startsWith('notificacion')) {
+      this.revisarNotificacionesPorRol(this.currentUser);
+    }
+  }
+
+  private revisarNotificacionesPorRol(user: UserProfile): void {
+    if (user.role === 'Programador') {
+      const key = 'nueva_solicitud_para_' + user.uid;
+      const hayNuevaSolicitud = localStorage.getItem(key);
+      if (hayNuevaSolicitud) {
+        this.notificationService.show('Tienes nuevas solicitudes de asesoría.', 'info');
+        localStorage.removeItem(key);
+      }
+    } else { // Para 'Usuario normal' y otros roles
+      const notificacion = localStorage.getItem('notificacion_asesoria');
+      if (notificacion) {
+        const tipo = notificacion.includes('APROBADA') ? 'success' : 'error';
+        this.notificationService.show(notificacion, tipo);
+        localStorage.removeItem('notificacion_asesoria');
+      }
+    }
   }
 
   ngOnDestroy() {
@@ -33,7 +69,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   onRegisterWithGoogle(): void {
-    this.errorMessage = null; // Limpiar errores previos
+    this.errorMessage = null;
     this.autenticacion.registerWithGoogle()
       .then(profile => {
         this.currentUser = profile;
@@ -44,7 +80,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   onSignInWithGoogle(): void {
-    this.errorMessage = null; // Limpiar errores previos
+    this.errorMessage = null;
     this.autenticacion.signInWithGoogle()
       .then(profile => {
         this.currentUser = profile;
@@ -60,7 +96,6 @@ export class AppComponent implements OnInit, OnDestroy {
     } else if (error.message === 'AUTH/USER-NOT-FOUND') {
       this.errorMessage = 'Usuario no registrado. Por favor, regístrate primero.';
     } else {
-      // Manejo de otros posibles errores de Firebase
       this.errorMessage = 'Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo.';
       console.error(error);
     }
