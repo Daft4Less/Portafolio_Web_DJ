@@ -3,7 +3,24 @@
     <h3>{{ proyecto.name }}</h3>
     <p>{{ proyecto.description }}</p>
 
+    <div class="project-details">
+      <p><strong>Participación:</strong> {{ proyecto.participationType }}</p>
+      <p><strong>Sección:</strong> {{ proyecto.section }}</p>
+      <div class="technologies">
+        <strong>Tecnologías:</strong>
+        <span *ngFor="let tech of proyecto.technologies" class="tech-tag">{{ tech }}</span>
+      </div>
+    </div>
+
     <div class="tarjeta-footer">
+        <div class="enlaces-externos">
+            <a *ngIf="proyecto.repositoryLink" [href]="proyecto.repositoryLink" target="_blank" rel="noopener noreferrer" class="btn-enlace btn-repositorio">
+                <i class="fab fa-github"></i> Repositorio
+            </a>
+            <a *ngIf="proyecto.deploymentLink" [href]="proyecto.deploymentLink" target="_blank" rel="noopener noreferrer" class="btn-enlace btn-despliegue">
+                <i class="fas fa-globe"></i> Despliegue
+            </a>
+        </div>
         <div class="acciones-edicion">
             <button class="btn-accion btn-editar" (click)="onEditar()">
                 Editar

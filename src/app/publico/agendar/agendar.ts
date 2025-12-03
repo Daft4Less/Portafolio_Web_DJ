@@ -55,10 +55,10 @@ export class Agendar implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.route.queryParamMap.pipe(
+    this.route.paramMap.pipe(
       takeUntil(this.unsubscribe$),
       switchMap(params => {
-        const programadorId = params.get('programadorId');
+        const programadorId = params.get('id');
         if (programadorId) {
           const programadorProfile$ = this.programadoresService.getProgramadorProfile(programadorId);
           const programmerSchedules$ = this.programmerScheduleService.getSchedules(programadorId);

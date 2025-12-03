@@ -3,25 +3,35 @@
   <p class="descripcion">Administra los usuarios registrados del sistema.</p>
 
   <div class="contenido">
-    <div class="lista-usuarios">
+    <div class="table-container">
       <h3>Usuarios Normales</h3>
       <ng-container *ngIf="normalUsers$ | async as users">
         <div *ngIf="users.length === 0" class="mensaje-lista">
           <p>No hay usuarios normales registrados aún.</p>
         </div>
-        <ul *ngIf="users.length > 0">
-          <li *ngFor="let user of users">
-            <div class="info">
-              <img [src]="user.photoURL || 'assets/placeholder-user.png'" alt="Foto de perfil">
-              <span>{{ user.displayName }} ({{ user.email }})</span>
-              <span class="role">{{ user.role }}</span>
-            </div>
-            <div class="acciones">
-              <button (click)="selectUser(user)" class="btn-editar">Editar</button>
-              <button (click)="deleteUser(user.uid)" class="btn-eliminar">Eliminar</button>
-            </div>
-          </li>
-        </ul>
+        <table *ngIf="users.length > 0" class="admin-table">
+          <thead>
+            <tr>
+              <th>Foto</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users">
+              <td><img [src]="user.photoURL || 'assets/placeholder-user.png'" alt="Foto de perfil" class="profile-pic"></td>
+              <td>{{ user.displayName }}</td>
+              <td>{{ user.email }}</td>
+              <td><span class="role-badge role-{{user.role | lowercase}}">{{ user.role }}</span></td>
+              <td class="acciones">
+                <button (click)="selectUser(user)" class="btn-accion btn-editar">Editar</button>
+                <button (click)="deleteUser(user.uid)" class="btn-accion btn-eliminar">Eliminar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </ng-container>
     </div>
   </div>

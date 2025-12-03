@@ -4,18 +4,25 @@
     Revisa las solicitudes de asesoría que los usuarios han enviado.
   </p>
 
+  <div class="asesorias-dashboard">
+    <button (click)="setFilter('activas')" [class.active]="currentFilter === 'activas'">Activas</button>
+    <button (click)="setFilter('rechazada')" [class.active]="currentFilter === 'rechazada'">Rechazadas</button>
+    <button (click)="setFilter('finalizada')" [class.active]="currentFilter === 'finalizada'">Finalizadas</button>
+  </div>
+
   <div class="contenido">
-    <div *ngIf="!asesorias || asesorias.length === 0" class="mensaje-lista">
-      <p>No tienes solicitudes de asesoría.</p>
+    <div *ngIf="!filteredAsesorias || filteredAsesorias.length === 0" class="mensaje-lista">
+      <p>No tienes solicitudes de asesoría en esta categoría.</p>
     </div>
 
-    <div class="lista-asesorias" *ngIf="asesorias && asesorias.length > 0">
+    <div class="lista-asesorias" *ngIf="filteredAsesorias && filteredAsesorias.length > 0">
       <!-- El contenido de la lista será generado dinámicamente por el backend -->
-      <div *ngFor="let asesoria of asesorias" class="tarjeta-asesoria">
+      <div *ngFor="let asesoria of filteredAsesorias" class="tarjeta-asesoria">
         <!-- El contenido de la tarjeta se mantiene como referencia para el backend -->
         <h3>Solicitud de {{ asesoria.solicitanteNombre }}</h3>
         <p><strong>Fecha:</strong> {{ asesoria.fecha.toDate() | date: 'dd/MM/yyyy' }}</p>
         <p><strong>Estado:</strong> <span class="estado-{{asesoria.estado}}">{{ asesoria.estado }}</span></p>
+        <p><strong>Comentario:</strong> {{ asesoria.comentario }}</p>
         <div class="acciones">
           <ng-container *ngIf="asesoria.estado === 'pendiente'">
             <button class="btn-aceptar" (click)="aceptarAsesoria(asesoria.id!)">Aceptar</button>

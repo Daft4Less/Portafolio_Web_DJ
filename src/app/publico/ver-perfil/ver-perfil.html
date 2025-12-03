@@ -6,7 +6,7 @@
         <h1>{{ perfil.displayName }}</h1>
         <p class="role">{{ perfil.role }}</p>
       </div>
-      <a [routerLink]="['/agendar']" [queryParams]="{ programadorId: perfil.uid }" class="btn btn-primary">
+      <a [routerLink]="['/agendar', perfil.uid]" class="btn btn-primary">
         Agendar Asesoría
       </a>
     </div>
@@ -33,7 +33,7 @@
       <h2>Horarios de Asesoría</h2>
       <ul>
         <li *ngFor="let schedule of perfil.schedules">
-          {{ schedule.dayOfWeek }}: {{ schedule.startTime }} - {{ schedule.endTime }}
+          {{ daysOfWeekArray[schedule.dayOfWeek] }}: {{ schedule.startTime }} - {{ schedule.endTime }}
         </li>
       </ul>
     </div>

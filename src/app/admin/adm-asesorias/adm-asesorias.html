@@ -3,24 +3,32 @@
   <p class="descripcion">Asigna y gestiona los horarios de disponibilidad para cada programador.</p>
 
   <div class="contenido">
-    <div class="lista-programadores">
+    <div class="table-container">
       <h3>Programadores Activos</h3>
       <ng-container *ngIf="programmers$ | async as programmers">
         <div *ngIf="programmers.length === 0" class="mensaje-lista">
           <p>No hay programadores registrados aún.</p>
         </div>
-        <ul *ngIf="programmers.length > 0">
-        <li *ngFor="let programmer of programmers">
-          <div class="info">
-            <img [src]="programmer.photoURL || 'assets/placeholder-user.png'" alt="Foto de perfil">
-            <span>{{ programmer.displayName }} ({{ programmer.email }})</span>
-            <span class="role">{{ programmer.role }}</span>
-          </div>
-          <div class="acciones">
-            <button (click)="selectProgrammer(programmer)" class="btn-editar">Asignar Horario</button>
-          </div>
-        </li>
-      </ul>
+        <table *ngIf="programmers.length > 0" class="admin-table">
+          <thead>
+            <tr>
+              <th>Foto</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let programmer of programmers">
+              <td><img [src]="programmer.photoURL || 'assets/placeholder-user.png'" alt="Foto de perfil" class="profile-pic"></td>
+              <td>{{ programmer.displayName }}</td>
+              <td>{{ programmer.email }}</td>
+              <td class="acciones">
+                <button (click)="selectProgrammer(programmer)" class="btn-accion btn-editar">Asignar Horario</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </ng-container>
     </div>
   </div>

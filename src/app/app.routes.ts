@@ -24,7 +24,7 @@ export const routes: Routes = [
     { path: 'inicio', component: Inicio },
     { path: 'programadores', component: Programadores },
     { path: 'ver-perfil/:id', component: VerPerfil },
-    { path: 'agendar', component: Agendar, canActivate: [AuthGuard] },
+    { path: 'agendar/:id', component: Agendar, canActivate: [AuthGuard] },
     { path: 'login', component: Login, canMatch: [NoAuthGuard] },
 
     // Programador Routes

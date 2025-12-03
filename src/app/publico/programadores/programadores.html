@@ -22,8 +22,10 @@
         <div class="card-content">
           <h3>{{ programador.displayName }}</h3>
           <p class="specialty">{{ programador.especialidad }}</p>
-          <a [routerLink]="['/ver-perfil', programador.uid]" class="btn-profile">Ver Perfil</a>
-          <a routerLink="/agendar" class="btn btn-secondary">Agendar Asesoría</a>
+          <div class="card-buttons">
+            <button *ngIf="!isAgendaMode" [routerLink]="['/ver-perfil', programador.uid]" class="btn-profile">Ver Perfil</button>
+            <button [routerLink]="['/agendar', programador.uid]" class="btn btn-secondary">Agendar Asesoría</button>
+          </div>
         </div>
       </div>
     </ng-container>

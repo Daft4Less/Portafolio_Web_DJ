@@ -76,25 +76,20 @@
         object-position: center;
       }
 
-      .programmer-info {
+      .card-content {
         padding: 1.5rem;
         flex-grow: 1;
         display: flex;
         flex-direction: column;
-        
+        text-align: center;
+        align-items: center;
+
         h3 {
           font-size: 1.5rem;
           color: #343a40;
           margin: 0 0 0.25rem 0;
         }
 
-        .role {
-          font-size: 1rem;
-          color: #007bff;
-          font-weight: 500;
-          margin-bottom: 0.75rem;
-        }
-        
         .specialty {
           font-size: 0.95rem;
           color: #6c757d;
@@ -102,36 +97,44 @@
           margin-bottom: 1rem;
         }
 
-        .tech-tags {
+        .card-buttons {
           display: flex;
-          flex-wrap: wrap;
-          gap: 0.5rem;
-          margin-bottom: 1.5rem;
-
-          .tag {
-            background-color: #e9ecef;
-            color: #495057;
-            padding: 0.3em 0.7em;
-            border-radius: 15px;
-            font-size: 0.8rem;
-          }
+          flex-direction: column;
+          gap: 0.75rem; /* Espacio entre los botones */
+          width: 100%;
+          margin-top: auto; /* Empuja los botones al final */
         }
 
-        .btn-profile {
+        .btn-profile, .btn-secondary {
           display: block;
           width: 100%;
           text-align: center;
           padding: 0.75rem;
-          background-color: #007bff;
-          color: white;
           border-radius: 5px;
           text-decoration: none;
           font-weight: 600;
-          transition: background-color 0.2s;
-          margin-top: auto;
+          transition: background-color 0.2s, transform 0.2s;
+          border: 1px solid transparent;
 
           &:hover {
+            transform: translateY(-2px);
+          }
+        }
+
+        .btn-profile {
+          background-color: #007bff;
+          color: white;
+          &:hover {
             background-color: #0056b3;
+          }
+        }
+        
+        .btn-secondary {
+          background-color: #f8f9fa;
+          color: #343a40;
+          border-color: #dee2e6;
+          &:hover {
+            background-color: #e2e6ea;
           }
         }
       }

@@ -15,7 +15,10 @@ import { NotificationService } from '../../services/notification';
 })
 export class Asesorias implements OnInit, OnDestroy {
   
-  asesorias: Asesoria[] = [];
+  allAsesorias: Asesoria[] = [];
+  filteredAsesorias: Asesoria[] = [];
+  currentFilter: string = 'activas'; // 'activas', 'rechazada', 'finalizada'
+  
   private unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -36,21 +39,56 @@ export class Asesorias implements OnInit, OnDestroy {
     this.asesoriasService.getAsesorias().pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe((data: Asesoria[]) => {
-      this.asesorias = data;
+      this.allAsesorias = data;
+      this.applyFiltersAndSort(); // Apply default filter and sort
+    });
+  }
+
+  setFilter(filter: string): void {
+    this.currentFilter = filter;
+    this.applyFiltersAndSort();
+  }
+
+  applyFiltersAndSort(): void {
+    // 1. Filter
+    let filtered: Asesoria[];
+    if (this.currentFilter === 'activas') {
+      filtered = this.allAsesorias.filter(a => a.estado === 'pendiente' || a.estado === 'aprobada');
+    } else {
+      filtered = this.allAsesorias.filter(a => a.estado === this.currentFilter);
+    }
+
+    // 2. Sort
+    const statusPriority: { [key: string]: number } = {
+      'pendiente': 1,
+      'aprobada': 2,
+      'rechazada': 3,
+      'finalizada': 4
+    };
+
+    this.filteredAsesorias = filtered.sort((a, b) => {
+      const priorityA = statusPriority[a.estado] || 99;
+      const priorityB = statusPriority[b.estado] || 99;
+
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB;
+      }
+
+      return b.fecha.toMillis() - a.fecha.toMillis();
     });
   }
 
   async aceptarAsesoria(id: string): Promise<void> {
     try {
       await this.asesoriasService.updateEstadoAsesoria(id, 'aprobada');
-      const asesoria = this.asesorias.find(a => a.id === id);
+      const asesoria = this.allAsesorias.find(a => a.id === id);
       if (asesoria) {
+        asesoria.estado = 'aprobada'; // Update local state
         const notificacionKey = 'notificacion_asesoria_para_' + asesoria.solicitanteId;
         this.notificationService.show('Asesoría aprobada', 'success');
-        console.log(`Simulación: Asesoría ${id} aprobada. Notificación para el usuario ${asesoria.solicitanteId} con estado 'Aprobada' registrada.`);
         localStorage.setItem(notificacionKey, 'Tu solicitud de asesoría ha sido APROBADA');
       }
-      this.cargarAsesorias(); // Recargar la lista
+      this.applyFiltersAndSort(); // Re-apply filters and sort
     } catch (error) {
       console.error('Error al aceptar la asesoría:', error);
       this.notificationService.show('Error al aceptar la asesoría', 'error');
@@ -60,14 +98,14 @@ export class Asesorias implements OnInit, OnDestroy {
   async finalizarAsesoria(id: string): Promise<void> {
     try {
       await this.asesoriasService.updateEstadoAsesoria(id, 'finalizada');
-      const asesoria = this.asesorias.find(a => a.id === id);
+      const asesoria = this.allAsesorias.find(a => a.id === id);
       if (asesoria) {
+        asesoria.estado = 'finalizada'; // Update local state
         const notificacionKey = 'notificacion_asesoria_para_' + asesoria.solicitanteId;
         this.notificationService.show('Asesoría marcada como finalizada', 'info');
-        console.log(`Simulación: Asesoría ${id} finalizada. Notificación para el usuario ${asesoria.solicitanteId} con estado 'Finalizada' registrada.`);
         localStorage.setItem(notificacionKey, 'Tu solicitud de asesoría ha sido FINALIZADA');
       }
-      this.cargarAsesorias(); // Recargar la lista
+      this.applyFiltersAndSort(); // Re-apply filters and sort
     } catch (error) {
       console.error('Error al finalizar la asesoría:', error);
       this.notificationService.show('Error al finalizar la asesoría', 'error');
@@ -77,14 +115,14 @@ export class Asesorias implements OnInit, OnDestroy {
   async rechazarAsesoria(id: string): Promise<void> {
     try {
       await this.asesoriasService.updateEstadoAsesoria(id, 'rechazada');
-      const asesoria = this.asesorias.find(a => a.id === id);
+      const asesoria = this.allAsesorias.find(a => a.id === id);
       if (asesoria) {
+        asesoria.estado = 'rechazada'; // Update local state
         const notificacionKey = 'notificacion_asesoria_para_' + asesoria.solicitanteId;
         this.notificationService.show('Asesoría rechazada', 'info');
-        console.log(`Simulación: Asesoría ${id} rechazada. Notificación para el usuario ${asesoria.solicitanteId} con estado 'Rechazada' registrada.`);
         localStorage.setItem(notificacionKey, 'Tu solicitud de asesoría ha sido RECHAZADA');
       }
-      this.cargarAsesorias(); // Recargar la lista
+      this.applyFiltersAndSort(); // Re-apply filters and sort
     } catch (error) {
       console.error('Error al rechazar la asesoría:', error);
       this.notificationService.show('Error al rechazar la asesoría', 'error');

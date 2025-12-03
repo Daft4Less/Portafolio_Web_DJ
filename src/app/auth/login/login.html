@@ -1,34 +1,46 @@
-<section class="login">
-
-  <ng-container *ngIf="user$ | async as user; else showLogin">
-    <h2>Bienvenido, {{ user.displayName }}</h2>
-    <img [src]="user.photoURL" alt="Foto de perfil" class="profile-photo">
-    <div class="contenedor-boton">
-      <button class="btn-google" (click)="logout()">
-        Cerrar Sesión
-      </button>
-    </div>
-  </ng-container>
-
-  <ng-template #showLogin>
-    <h2>Iniciar Sesión</h2>
-    <p class="descripcion">Accede con tu cuenta de Google</p>
-
-    <div class="contenedor-boton">
-      <button class="btn-google" (click)="login()">
-        <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google">
-        Iniciar sesión con Google
-      </button>
-      
-      <button class="btn-google" (click)="register()">
-        <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google">
-        Registrarse con Google
-      </button>
-    </div>
-  </ng-template>
-
-  <div *ngIf="errorMessage" class="error-message">
-    {{ errorMessage }}
+<div class="login-page">
+  <div class="login-branding">
+    <h1>Portafolio Dev</h1>
+    <p>Conecta, colabora y crea. Tu próximo gran proyecto empieza aquí.</p>
   </div>
 
-</section>
+  <div class="login-form-wrapper">
+    <div class="login-card">
+      <ng-container *ngIf="user$ | async as user; else showLogin">
+        <h3>Bienvenido de nuevo,</h3>
+        <h2>{{ user.displayName }}</h2>
+        <img [src]="user.photoURL" alt="Foto de perfil" class="profile-photo">
+        <div class="button-wrapper">
+          <button class="btn-primary" (click)="logout()">
+            Cerrar Sesión
+          </button>
+        </div>
+      </ng-container>
+
+      <ng-template #showLogin>
+        <h2>Accede a tu cuenta</h2>
+        <p class="descripcion">Usa tu cuenta de Google para continuar.</p>
+
+        <div class="button-wrapper">
+          <button class="btn-google" (click)="login()">
+            <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google">
+            Iniciar sesión con Google
+          </button>
+          
+          <div class="separator">o</div>
+
+          <button class="btn-secondary" (click)="register()">
+            ¿Eres nuevo? Regístrate aquí
+          </button>
+        </div>
+      </ng-template>
+
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+    </div>
+    <footer class="login-footer">
+      <p>&copy; 2025 Portafolio Dev. Todos los derechos reservados.</p>
+    </footer>
+  </div>
+</div>

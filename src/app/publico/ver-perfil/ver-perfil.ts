@@ -23,6 +23,7 @@ interface PerfilProgramadorConHorario extends PerfilProgramador {
 export class VerPerfil implements OnInit {
   
   perfilConHorario$: Observable<PerfilProgramadorConHorario | null>;
+  daysOfWeekArray = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
   constructor(
     private route: ActivatedRoute,
