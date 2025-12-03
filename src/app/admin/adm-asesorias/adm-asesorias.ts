@@ -55,6 +55,12 @@ export class AdmAsesorias implements OnInit {
   selectProgrammer(programmer: UserProfile): void {
     // Ensure schedules is an array
     const programmerWithSchedules = { ...programmer, schedules: programmer.schedules || [] };
+
+    // Sort schedules by dayOfWeek
+    if (programmerWithSchedules.schedules) {
+      programmerWithSchedules.schedules.sort((a, b) => a.dayOfWeek - b.dayOfWeek);
+    }
+
     this.selectedProgrammerSubject.next(programmerWithSchedules);
     this.cancelScheduleEdit();
     this.showModal = true;
