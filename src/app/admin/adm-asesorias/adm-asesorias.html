@@ -1,8 +1,96 @@
 <section class="admin-page">
-  <h2>Gestión de Asesorías</h2>
-  <p class="descripcion">Revisa todas las asesorías solicitadas por los usuarios.</p>
+  <h2>Gestión de Horarios de Programadores</h2>
+  <p class="descripcion">Asigna y gestiona los horarios de disponibilidad para cada programador.</p>
 
   <div class="contenido">
-    <p class="vacio">No hay solicitudes de asesoría por ahora.</p>
+    <div class="table-container">
+      <h3>Programadores Activos</h3>
+      <ng-container *ngIf="programmers$ | async as programmers">
+        <div *ngIf="programmers.length === 0" class="mensaje-lista">
+          <p>No hay programadores registrados aún.</p>
+        </div>
+        <table *ngIf="programmers.length > 0" class="admin-table">
+          <thead>
+            <tr>
+              <th>Foto</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let programmer of programmers">
+              <td><img [src]="programmer.photoURL || 'assets/placeholder-user.png'" alt="Foto de perfil" class="profile-pic"></td>
+              <td>{{ programmer.displayName }}</td>
+              <td>{{ programmer.email }}</td>
+              <td class="acciones">
+                <button (click)="selectProgrammer(programmer)" class="btn-accion btn-editar">Asignar Horario</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- MODAL PARA GESTIÓN DE HORARIOS DEL PROGRAMADOR -->
+  <div class="modal-overlay" *ngIf="showModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Gestionar Horarios de {{ (selectedProgrammer$ | async)?.displayName }}</h3>
+        <button class="modal-close-btn" (click)="closeModal()">X</button>
+      </div>
+
+      <div class="seccion-horarios">
+        <h3>Horarios de Disponibilidad</h3>
+        <ng-container *ngIf="(selectedProgrammer$ | async)?.schedules as schedules">
+          <div *ngIf="schedules.length === 0" class="mensaje-lista">
+            <p>Este programador no tiene horarios registrados.</p>
+          </div>
+          <ul class="lista-horarios" *ngIf="schedules.length > 0">
+            <li *ngFor="let schedule of schedules">
+              <span>{{ daysOfWeekArray[schedule.dayOfWeek] }}: {{ schedule.startTime }} - {{ schedule.endTime }} ({{ schedule.isAvailable ? 'Disponible' : 'No Disponible' }})</span>
+              <div class="acciones">
+                <button (click)="editSchedule(schedule)" class="btn-editar">Editar Horario</button>
+                <button (click)="deleteSchedule(schedule.id!)" class="btn-eliminar">Eliminar Horario</button>
+              </div>
+            </li>
+          </ul>
+        </ng-container>
+
+        <div class="formulario-horario">
+          <h4>{{ (selectedSchedule$ | async) ? 'Editar Horario' : 'Agregar Nuevo Horario' }}</h4>
+          <form [formGroup]="scheduleForm" (ngSubmit)="saveSchedule()">
+            <div formGroupName="daysOfWeek" class="days-of-week">
+              <label *ngFor="let day of daysOfWeekArray; let i = index" class="checkbox-container">
+                <input type="checkbox" [formControlName]="i">
+                {{ day }}
+              </label>
+            </div>
+            <div class="time-inputs">
+              <label>
+                Hora Inicio:
+                <input type="time" formControlName="startTime" min="07:00" max="21:00">
+              </label>
+              <label>
+                Hora Fin:
+                <input type="time" formControlName="endTime" min="07:00" max="21:00">
+              </label>
+            </div>
+            <label class="checkbox-container">
+              <input type="checkbox" formControlName="isAvailable">
+              Disponible
+            </label>
+            <div class="form-actions">
+              <button type="submit" [disabled]="!scheduleForm.valid" class="btn-guardar">
+                {{ (selectedSchedule$ | async) ? 'Guardar Cambios' : 'Agregar Horario' }}
+              </button>
+              <button type="button" (click)="cancelScheduleEdit()" class="btn-cancelar">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
+

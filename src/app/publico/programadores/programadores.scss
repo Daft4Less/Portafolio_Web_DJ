@@ -1,53 +1,156 @@
-.lista-programadores {
-  padding: 2rem 1rem;
-  max-width: 900px;
-  margin: 0 auto;
-}
+.programadores-page {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
 
-.lista-programadores h2 {
-  text-align: center;
-  margin-bottom: 1rem;
-}
+  .header-section {
+    text-align: center;
+    margin-bottom: 3rem;
 
-.descripcion {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  color: #444;
-  font-size: 0.95rem;
-}
+    h2 {
+      font-size: 2.8rem;
+      color: #343a40;
+      margin-bottom: 0.75rem;
+    }
 
-.grupo-tarjetas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-}
+    .descripcion {
+      font-size: 1.1rem;
+      color: #6c757d;
+      margin-bottom: 2rem;
+    }
 
-.tarjeta-programador {
-  background: #f8f8f8;
-  padding: 1rem;
-  border-radius: 8px;
-  width: 220px;
-  text-align: center;
-}
+    .search-bar {
+      position: relative;
+      max-width: 500px;
+      margin: 0 auto;
 
-.tarjeta-programador h3 {
-  margin: 0.5rem 0;
-  font-size: 1rem;
-}
+      .search-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #adb5bd;
+        font-size: 1.1rem;
+      }
 
-.tarjeta-programador p {
-  margin-bottom: 0.75rem;
-  font-size: 0.85rem;
-  color: #555;
-}
+      input {
+        width: 100%;
+        padding: 1rem 1rem 1rem 3rem;
+        border-radius: 50px;
+        border: 1px solid #ced4da;
+        font-size: 1.1rem;
+        transition: box-shadow 0.2s;
 
-.tarjeta-programador button {
-  padding: 0.5rem 1rem;
-  font-size: 0.85rem;
-  border: none;
-  border-radius: 5px;
-  background-color: #2a72ff;
-  color: #fff;
-  cursor: pointer;
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+          border-color: #80bdff;
+        }
+      }
+    }
+  }
+
+  .programadores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+
+    .programmer-card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+      &:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+      }
+
+      .programmer-photo {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        object-position: center;
+      }
+
+      .card-content {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+
+        h3 {
+          font-size: 1.5rem;
+          color: #343a40;
+          margin: 0 0 0.25rem 0;
+        }
+
+        .specialty {
+          font-size: 0.95rem;
+          color: #6c757d;
+          flex-grow: 1;
+          margin-bottom: 1rem;
+        }
+
+        .card-buttons {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem; /* Espacio entre los botones */
+          width: 100%;
+          margin-top: auto; /* Empuja los botones al final */
+        }
+
+        .btn-profile, .btn-secondary {
+          display: block;
+          width: 100%;
+          text-align: center;
+          padding: 0.75rem;
+          border-radius: 5px;
+          text-decoration: none;
+          font-weight: 600;
+          transition: background-color 0.2s, transform 0.2s;
+          border: 1px solid transparent;
+
+          &:hover {
+            transform: translateY(-2px);
+          }
+        }
+
+        .btn-profile {
+          background-color: #007bff;
+          color: white;
+          &:hover {
+            background-color: #0056b3;
+          }
+        }
+        
+        .btn-secondary {
+          background-color: #f8f9fa;
+          color: #343a40;
+          border-color: #dee2e6;
+          &:hover {
+            background-color: #e2e6ea;
+          }
+        }
+      }
+    }
+  }
+
+  .no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    
+    p {
+      font-size: 1.2rem;
+      color: #6c757d;
+    }
+  }
 }

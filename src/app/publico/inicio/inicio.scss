@@ -1,49 +1,174 @@
-.Inico {
-  padding: 3rem 1.5rem;
-  max-width: 900px;
-  margin: 0 auto;
-  text-align: center;
-}
+.inicio-page {
+  width: 100%;
 
-.Inico h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: #222;
-}
+  // Estilos generales de los botones
+  .btn {
+    padding: 0.8rem 1.8rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: none;
+    cursor: pointer;
 
-.Inico p {
-  font-size: 1.05rem;
-  line-height: 1.6;
-  max-width: 650px;
-  margin: 0.5rem auto 2rem auto;
-  color: #444;
-}
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+  }
 
-.acciones-inicio {
-  display: flex;
-  justify-content: center;
-  gap: 1.3rem;
-  flex-wrap: wrap;
-}
+  .btn-primary {
+    background-color: #007bff;
+    color: white;
+  }
 
-.acciones-inicio button {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.25s ease-in-out;
-  background-color: #005bbb;
-  color: white;
-  font-weight: 500;
-}
+  .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+  }
+  
+  .btn-tertiary {
+    background-color: #f0f0f0;
+    color: #333;
+    font-size: 0.9rem;
+    padding: 0.5rem 1.2rem;
+  }
 
-.acciones-inicio button:nth-child(2) {
-  background-color: #00a86b;
-}
+  // Hero Section
+  .hero-section {
+    background: linear-gradient(135deg, #6dd5ed, #2193b0);
+    color: white;
+    text-align: center;
+    padding: 6rem 2rem;
 
-.acciones-inicio button:hover {
-  opacity: 0.85;
-  transform: translateY(-2px);
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+
+      h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      p {
+        font-size: 1.25rem;
+        line-height: 1.6;
+        margin-bottom: 2.5rem;
+        opacity: 0.9;
+      }
+
+      .hero-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+      }
+    }
+  }
+
+  // Secciones generales
+  .featured-programmers,
+  .popular-projects {
+    padding: 4rem 2rem;
+    text-align: center;
+
+    h2 {
+      font-size: 2.5rem;
+      color: #343a40;
+      margin-bottom: 3rem;
+      position: relative;
+      display: inline-block;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 4px;
+        background-color: #007bff;
+        border-radius: 2px;
+      }
+    }
+  }
+  
+  .featured-programmers {
+    background-color: #f8f9fa;
+  }
+
+  // Grids
+  .programmers-grid,
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  // Tarjetas
+  .programmer-card,
+  .project-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  .programmer-card {
+    text-align: center;
+    padding: 2rem 1.5rem;
+
+    .programmer-photo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin-bottom: 1rem;
+      border: 3px solid #f0f0f0;
+    }
+
+    h3 {
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+      color: #343a40;
+    }
+
+    p {
+      color: #6c757d;
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  .project-card {
+    overflow: hidden;
+
+    .project-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .project-info {
+      padding: 1.5rem;
+
+      h3 {
+        font-size: 1.3rem;
+        margin-bottom: 0.25rem;
+      }
+
+      p {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+    }
+  }
 }

@@ -3,6 +3,65 @@
   <p class="descripcion">Administra los usuarios registrados del sistema.</p>
 
   <div class="contenido">
-    <p class="vacio">Aún no hay usuarios registrados.</p>
+    <div class="table-container">
+      <h3>Usuarios Normales</h3>
+      <ng-container *ngIf="normalUsers$ | async as users">
+        <div *ngIf="users.length === 0" class="mensaje-lista">
+          <p>No hay usuarios normales registrados aún.</p>
+        </div>
+        <table *ngIf="users.length > 0" class="admin-table">
+          <thead>
+            <tr>
+              <th>Foto</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users">
+              <td><img [src]="user.photoURL || 'assets/placeholder-user.png'" alt="Foto de perfil" class="profile-pic"></td>
+              <td>{{ user.displayName }}</td>
+              <td>{{ user.email }}</td>
+              <td><span class="role-badge role-{{user.role | lowercase}}">{{ user.role }}</span></td>
+              <td class="acciones">
+                <button (click)="selectUser(user)" class="btn-accion btn-editar">Editar</button>
+                <button (click)="deleteUser(user.uid)" class="btn-accion btn-eliminar">Eliminar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- MODAL PARA EDITAR USUARIO -->
+  <div class="modal-overlay" *ngIf="showModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Editar Usuario</h3>
+        <button class="modal-close-btn" (click)="closeModal()">X</button>
+      </div>
+
+      <div class="formulario-edicion">
+        <form [formGroup]="userForm" (ngSubmit)="saveUser()">
+          <input type="hidden" formControlName="uid">
+          <label>
+            Nombre:
+            <input type="text" formControlName="displayName">
+          </label>
+          <label>
+            Email:
+            <input type="email" formControlName="email" readonly>
+          </label>
+          
+          <div class="form-actions">
+            <button type="submit" [disabled]="!userForm.valid" class="btn-guardar">Guardar Cambios</button>
+            <button type="button" (click)="closeModal()" class="btn-cancelar">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </section>

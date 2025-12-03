@@ -1,31 +1,28 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-export interface Proyecto {
-  nombre: string;
-  descripcion: string;
-  tecnologias: string[];
-  linkGitHub: string;
-  linkDemo?: string;
-  imagenUrl?: string;
-}
+import { Project } from '../../../models/portfolio.model'; // Corregir la ruta de importación
 
 @Component({
   selector: 'app-tarjeta-proyecto',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './tarjeta-proyecto.html',
-  styleUrl: './tarjeta-proyecto.scss',
+  styleUrls: ['./tarjeta-proyecto.scss'], // Corregir a styleUrls
 })
 export class TarjetaProyecto {
-  @Input() proyecto?: Proyecto;
+  // El Input ahora espera la interfaz Project importada
+  @Input() proyecto: Project | undefined;
+  
+  // El Output para eliminar ahora emitirá el ID (string)
   @Output() eliminarProyecto = new EventEmitter<string>();
 
-  @Output() editarProyecto = new EventEmitter<Proyecto>();
+  // El Output para editar emite el objeto completo del proyecto
+  @Output() editarProyecto = new EventEmitter<Project>();
 
   onEliminar(): void {
-    if (this.proyecto?.nombre) {
-      this.eliminarProyecto.emit(this.proyecto.nombre);
+    // Asegurarse de que el proyecto y su id existen antes de emitir
+    if (this.proyecto?.id) {
+      this.eliminarProyecto.emit(this.proyecto.id);
     }
   }
 

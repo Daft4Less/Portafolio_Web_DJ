@@ -1,17 +1,67 @@
-<section class="perfil">
-  <div class="perfil-header">
-    
-    <div>
-      <h2>Nombre del Programador</h2>
-      <p class="especialidad">Especialidad: Frontend Developer</p>
-      <p class="descripcion">
-        Descripción breve del programador, sus habilidades, experiencia y áreas donde destaca.
-      </p>
+<div class="profile-page" *ngIf="perfilConHorario$ | async as perfil; else loadingOrError">
+  
+  <header class="profile-header">
+    <div class="header-content">
+      <div class="header-info">
+        <h1>{{ perfil.displayName }}</h1>
+        <p class="role">{{ perfil.role }}</p>
+      </div>
+      <a [routerLink]="['/agendar', perfil.uid]" class="btn btn-primary">
+        Agendar Asesoría
+      </a>
     </div>
-  </div>
+  </header>
 
-  <div class="acciones">
-    <button>Ver proyectos</button>
-    <button routerLink="/agendar">Agendar asesoría</button>
+  <main class="profile-content">
+    <div class="profile-details">
+      <img [src]="perfil.photoURL || 'assets/default-profile.png'" alt="Foto de {{perfil.displayName}}" class="profile-photo">
+      <div class="details-text">
+        <p><strong>Especialidad:</strong> {{ perfil.especialidad || 'No especificada' }}</p>
+        <p><strong>Sobre mí:</strong> {{ perfil.descripcion || 'Sin descripción.' }}</p>
+        
+        <div *ngIf="perfil.contacto || perfil.email">
+          <h3>Contacto</h3>
+          <p *ngIf="perfil.email">Email: <a [href]="'mailto:' + perfil.email">{{ perfil.email }}</a></p>
+          <p *ngIf="perfil.contacto?.linkedin">LinkedIn: <a [href]="perfil.contacto.linkedin" target="_blank">{{ perfil.contacto.linkedin }}</a></p>
+          <p *ngIf="perfil.contacto?.github">GitHub: <a [href]="perfil.contacto.github" target="_blank">{{ perfil.contacto.github }}</a></p>
+          <!-- Agrega más campos de contacto si es necesario -->
+        </div>
+      </div>
+    </div>
+
+    <div class="schedule-section" *ngIf="perfil.schedules && perfil.schedules.length > 0">
+      <h2>Horarios de Asesoría</h2>
+      <ul>
+        <li *ngFor="let schedule of perfil.schedules">
+          {{ daysOfWeekArray[schedule.dayOfWeek] }}: {{ schedule.startTime }} - {{ schedule.endTime }}
+        </li>
+      </ul>
+    </div>
+    <div *ngIf="!perfil.schedules || perfil.schedules.length === 0" class="no-schedule">
+      <p>Este programador aún no ha registrado horarios de asesoría.</p>
+    </div>
+
+    <div class="projects-section" *ngIf="perfil.proyectos && perfil.proyectos.length > 0">
+      <h2>Proyectos</h2>
+      <div *ngFor="let project of perfil.proyectos" class="project-card">
+        <h3>{{ project.name }}</h3>
+        <p><strong>Tipo de participación:</strong> {{ project.participationType }}</p>
+        <p><strong>Sección:</strong> {{ project.section }}</p>
+        <p>{{ project.description }}</p>
+        <p><strong>Tecnologías:</strong> {{ project.technologies.join(', ') }}</p>
+        <p *ngIf="project.repositoryLink">Repositorio: <a [href]="project.repositoryLink" target="_blank">{{ project.repositoryLink }}</a></p>
+        <p *ngIf="project.deploymentLink">Despliegue: <a [href]="project.deploymentLink" target="_blank">{{ project.deploymentLink }}</a></p>
+      </div>
+    </div>
+    <div *ngIf="!perfil.proyectos || perfil.proyectos.length === 0" class="no-projects">
+      <p>Este programador aún no ha añadido proyectos.</p>
+    
+    </div>
+  </main>
+</div>
+
+<ng-template #loadingOrError>
+  <div class="message-container">
+    <p>Cargando perfil del programador...</p>
   </div>
-</section>
+</ng-template>

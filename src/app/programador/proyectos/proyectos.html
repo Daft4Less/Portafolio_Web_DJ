@@ -4,23 +4,31 @@
   <p class="descripcion">Administra tus proyectos académicos y laborales.</p>
 
   <div class="acciones">
-    <button class="btn-crear" (click)="toggleFormulario()">+ Crear proyecto</button>
+    <button *ngIf="!mostrarFormulario" class="btn-crear" (click)="toggleFormulario()">
+      + Crear proyecto
+    </button>
   </div>
 
-  
-  <app-formulario-proyecto *ngIf="mostrarFormulario" [proyecto]="proyectoAEditar" (proyectoAgregado)="onProyectoAgregado($event)"></app-formulario-proyecto>
+  <app-formulario-proyecto 
+    *ngIf="mostrarFormulario" 
+    [proyecto]="proyectoAEditar" 
+    (proyectoGuardado)="onProyectoGuardado($event)"
+    (cancelar)="onCancelarFormulario()">
+  </app-formulario-proyecto>
 
   <div class="lista-proyectos">
-
-    
-    <app-tarjeta-proyecto *ngFor="let p of proyectos" [proyecto]="p" (eliminarProyecto)="onEliminarProyecto($event)" (editarProyecto)="onEditarProyecto($event)"></app-tarjeta-proyecto>
-
-    
     <p *ngIf="!proyectos || proyectos.length === 0" class="sin-proyectos">
-      Aún no tienes proyectos registrados.
+      Aún no tienes proyectos registrados. ¡Crea el primero!
     </p>
+
+    <!-- El bucle *ngFor se elimina. El backend llenará la lista `proyectos`. -->
+    <app-tarjeta-proyecto 
+      *ngFor="let p of proyectos" 
+      [proyecto]="p" 
+      (eliminarProyecto)="onEliminarProyecto($event)" 
+      (editarProyecto)="onEditarProyecto($event)">
+    </app-tarjeta-proyecto>
 
   </div>
 
 </section>
-

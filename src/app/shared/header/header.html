@@ -3,10 +3,36 @@
     <h1>Portafolio Dev</h1>
   </div>
 
-  <nav class="cabecera__nav">
-    <a routerLink="/inicio" routerLinkActive="active">Inicio</a>
-    <a routerLink="/programadores" routerLinkActive="active">Programadores</a>
-    <a routerLink="/agendar" routerLinkActive="active">Agendar</a>
-    <a routerLink="/login" routerLinkActive="active">Ingresar</a>
-  </nav>
+  <ng-container *ngIf="!(isLoginPage$ | async)">
+    <nav class="cabecera__nav">
+      <ng-container *ngIf="currentUser$ | async as user">
+        <!-- Links for 'Usuario normal' and common ones -->
+        <ng-container *ngIf="user.role === 'Usuario normal'">
+          <a routerLink="/inicio" routerLinkActive="active">Inicio</a>
+          <a routerLink="/programadores" routerLinkActive="active">Programadores</a>
+        </ng-container>
+
+        <!-- Links for 'Programador' -->
+        <ng-container *ngIf="user.role === 'Programador'">
+          <a routerLink="/programador/proyectos" routerLinkActive="active">Mis Proyectos</a>
+          <a routerLink="/programador/asesorias" routerLinkActive="active">Mis Asesorías</a>
+        </ng-container>
+
+        <!-- Links for 'Administrador' -->
+        <ng-container *ngIf="user.role === 'Administrador'">
+          <a routerLink="/admin/adm-programadores" routerLinkActive="active">Gestión Programadores</a>
+          <a routerLink="/admin/adm-usuarios" routerLinkActive="active">Gestión Usuarios</a>
+          <a routerLink="/admin/adm-asesorias" routerLinkActive="active">Gestión Asesorías</a>
+        </ng-container>
+        
+        <a routerLink="/login" (click)="onLogout()" routerLinkActive="active">Cerrar Sesion</a>
+      </ng-container>
+      
+      <!-- Links for unauthenticated users -->
+      <ng-container *ngIf="!(currentUser$ | async)">
+        <a routerLink="/login" routerLinkActive="active">Iniciar Sesión</a>
+      </ng-container>
+    </nav>
+  </ng-container>
 </header>
+

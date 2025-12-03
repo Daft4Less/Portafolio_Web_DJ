@@ -1,21 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TarjetaProyecto, Proyecto } from './tarjeta-proyecto/tarjeta-proyecto';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+import { TarjetaProyecto } from './tarjeta-proyecto/tarjeta-proyecto';
 import { FormularioProyecto } from './formulario-proyecto/formulario-proyecto';
-import { ProyectosService } from '../../services/proyectos';
+import { Project } from '../../models/portfolio.model';
+import { ProyectosService } from '../../services/proyectos.service';
 
 @Component({
   selector: 'app-proyectos',
   standalone: true,
   imports: [CommonModule, TarjetaProyecto, FormularioProyecto],
   templateUrl: './proyectos.html',
-  styleUrl: './proyectos.scss',
+  styleUrls: ['./proyectos.scss'],
 })
-export class Proyectos implements OnInit {
-  proyectos: Proyecto[] = [];
+export class Proyectos implements OnInit, OnDestroy {
+  proyectos: Project[] = [];
   mostrarFormulario: boolean = false;
+  proyectoAEditar: Project | undefined;
 
-  proyectoAEditar: Proyecto | undefined;
+  private unsubscribe$ = new Subject<void>();
 
   constructor(private proyectosService: ProyectosService) {}
 
@@ -23,9 +28,16 @@ export class Proyectos implements OnInit {
     this.cargarProyectos();
   }
 
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
   cargarProyectos(): void {
-    this.proyectosService.getProyectos().subscribe(proyectos => {
-      this.proyectos = proyectos;
+    this.proyectosService.getProyectos().pipe(
+      takeUntil(this.unsubscribe$)
+    ).subscribe((data: Project[]) => {
+      this.proyectos = data;
     });
   }
 
@@ -34,20 +46,41 @@ export class Proyectos implements OnInit {
     this.mostrarFormulario = !this.mostrarFormulario;
   }
 
-  onProyectoAgregado(nuevoProyecto: Proyecto): void {
-    this.cargarProyectos(); 
+  onCancelarFormulario(): void {
     this.mostrarFormulario = false;
+    this.proyectoAEditar = undefined;
   }
 
-  onEliminarProyecto(nombreProyecto: string): void {
-    if (confirm(`¿Estás seguro de que quieres eliminar el proyecto "${nombreProyecto}"?`)) {
-      this.proyectosService.deleteProyecto(nombreProyecto).subscribe(() => {
-        this.cargarProyectos();
-      });
+  async onProyectoGuardado(proyecto: Project): Promise<void> {
+    try {
+      if (this.proyectoAEditar && this.proyectoAEditar.id) {
+        // Es una actualización
+        await this.proyectosService.updateProyecto(this.proyectoAEditar.id, proyecto);
+      } else {
+        // Es un nuevo proyecto
+        const projectData: Omit<Project, 'id'> = proyecto;
+        await this.proyectosService.addProyecto(projectData);
+      }
+      this.mostrarFormulario = false;
+      this.proyectoAEditar = undefined;
+      this.cargarProyectos(); // Recargar la lista de proyectos
+    } catch (error) {
+      console.error('Error al guardar el proyecto:', error);
+      // Aquí podrías mostrar un mensaje de error al usuario
     }
   }
 
-  onEditarProyecto(proyecto: Proyecto): void {
+  async onEliminarProyecto(idProyecto: string): Promise<void> {
+    try {
+      await this.proyectosService.deleteProyecto(idProyecto);
+      this.cargarProyectos(); // Recargar la lista de proyectos
+    } catch (error) {
+      console.error('Error al eliminar el proyecto:', error);
+      // Aquí podrías mostrar un mensaje de error al usuario
+    }
+  }
+
+  onEditarProyecto(proyecto: Project): void {
     this.proyectoAEditar = proyecto;
     this.mostrarFormulario = true;
   }

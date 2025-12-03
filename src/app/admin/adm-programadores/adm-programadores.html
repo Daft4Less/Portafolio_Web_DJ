@@ -3,6 +3,132 @@
   <p class="descripcion">Administra los programadores registrados.</p>
 
   <div class="contenido">
-    <p class="vacio">Aún no hay programadores registrados.</p>
+    <div class="table-container">
+      <h3>Programadores Activos</h3>
+      <ng-container *ngIf="programmers$ | async as programmers">
+        <div *ngIf="programmers.length === 0" class="mensaje-lista">
+          <p>No hay programadores registrados aún.</p>
+        </div>
+        <table *ngIf="programmers.length > 0" class="admin-table">
+          <thead>
+            <tr>
+              <th>Foto</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let programmer of programmers">
+              <td><img [src]="programmer.photoURL || 'assets/placeholder-user.png'" alt="Foto de perfil" class="profile-pic"></td>
+              <td>{{ programmer.displayName }}</td>
+              <td>{{ programmer.email }}</td>
+              <td><span class="role-badge role-{{programmer.role | lowercase}}">{{ programmer.role }}</span></td>
+              <td class="acciones">
+                <button (click)="selectProgrammer(programmer)" class="btn-accion btn-editar">Editar</button>
+                <button (click)="deleteProgrammer(programmer.uid)" class="btn-accion btn-eliminar">Eliminar</button>
+                <button (click)="demoteFromProgrammer(programmer)" class="btn-accion btn-demote">Degradar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+    </div>
+
+    <div class="table-container">
+      <h3>Otros Usuarios (potenciales programadores)</h3>
+      <ng-container *ngIf="nonProgrammers$ | async as nonProgrammers">
+        <div *ngIf="nonProgrammers.length === 0" class="mensaje-lista">
+          <p>No hay otros usuarios para promover.</p>
+        </div>
+        <table *ngIf="nonProgrammers.length > 0" class="admin-table">
+          <thead>
+            <tr>
+              <th>Foto</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of nonProgrammers">
+              <td><img [src]="user.photoURL || 'assets/placeholder-user.png'" alt="Foto de perfil" class="profile-pic"></td>
+              <td>{{ user.displayName }}</td>
+              <td>{{ user.email }}</td>
+              <td><span class="role-badge role-{{user.role | lowercase}}">{{ user.role }}</span></td>
+              <td class="acciones">
+                <button (click)="promoteToProgrammer(user)" class="btn-accion btn-promover">Promover a Programador</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+    </div>
+
+  </div>
+
+  <!-- MODAL PARA EDITAR PROGRAMADOR -->
+  <div class="modal-overlay" *ngIf="showModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Editar Programador</h3>
+        <button class="modal-close-btn" (click)="closeModal()">X</button>
+      </div>
+
+      <div class="formulario-edicion">
+        <form [formGroup]="programmerForm" (ngSubmit)="saveProgrammer()">
+          <input type="hidden" formControlName="uid">
+          <label>
+            Nombre:
+            <input type="text" formControlName="displayName">
+          </label>
+          <label>
+            Email:
+            <input type="email" formControlName="email" readonly>
+          </label>
+          <label>
+            Foto URL:
+            <input type="text" formControlName="photoURL">
+          </label>
+          <label>
+            Rol:
+            <select formControlName="role">
+              <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+            </select>
+          </label>
+          <label>
+            Especialidad:
+            <input type="text" formControlName="especialidad">
+          </label>
+          <label>
+            Descripción:
+            <textarea formControlName="descripcion"></textarea>
+          </label>
+          <fieldset formGroupName="contacto">
+            <legend>Enlaces de Contacto</legend>
+            <label>
+              GitHub:
+              <input type="text" formControlName="github">
+            </label>
+            <label>
+              LinkedIn:
+              <input type="text" formControlName="linkedin">
+            </label>
+            <label>
+              Sitio Web:
+              <input type="text" formControlName="website">
+            </label>
+          </fieldset>
+
+          <div class="form-actions">
+            <button type="submit" [disabled]="!programmerForm.valid" class="btn-guardar">Guardar Cambios</button>
+            <button type="button" (click)="closeModal()" class="btn-cancelar">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </section>
+

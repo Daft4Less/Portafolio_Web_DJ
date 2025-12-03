@@ -1,13 +1,23 @@
-<section class="panel-programador">
+<section class="dashboard-programador">
+  <header class="dashboard-header">
+    <h2>Bienvenido</h2>
+    <p class="descripcion">Aquí puedes gestionar tus actividades y ver un resumen de tu desempeño.</p>
+  </header>
 
-  <h2>Panel del Programador</h2>
-  <p class="descripcion">
-    Bienvenido a tu panel. Administra tus proyectos y revisa tus asesorías.
-  </p>
+  <div class="dashboard-contenido">
+    <!-- El contenido (estadísticas, actividad) se cargará dinámicamente desde el backend -->
+    <p>Cargando datos del dashboard...</p>
 
-  <div class="opciones">
-    <button routerLink="/programador/proyectos">Mis proyectos</button>
-    <button routerLink="/programador/asesorias">Mis asesorías</button>
+    <div class="seccion-navegacion">
+      <h3>Acceso Rápido</h3>
+      <div class="tarjetas-navegacion">
+        <button routerLink="/programador/proyectos" class="btn-navegacion">
+          <span>Mis Proyectos</span>
+        </button>
+        <button routerLink="/programador/asesorias" class="btn-navegacion">
+          <span>Mis Asesorías</span>
+        </button>
+      </div>
+    </div>
   </div>
-
 </section>

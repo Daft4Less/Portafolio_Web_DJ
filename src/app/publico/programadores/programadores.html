@@ -1,21 +1,33 @@
-<section class="lista-programadores">
-
-  <h2>Programadores Disponibles</h2>
-  <p class="descripcion">
-    Explora los diferentes programadores, revisa sus perfiles y visualiza sus proyectos.
-  </p>
-
-  <div class="grupo-tarjetas">
-
-    
-    <div class="tarjeta-programador">
-
-      <h3>Nombre generico</h3>
-      <p>Especialidad: Ejemplo</p>
-
-      <button routerLink="/empleado">Ver perfil</button>
+<section class="programadores-page">
+  <div class="header-section">
+    <h2>Encuentra tu Experto</h2>
+    <p class="descripcion">
+      Busca por nombre, especialidad o tecnología para encontrar al programador ideal para tu proyecto.
+    </p>
+    <div class="search-bar">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" [formControl]="searchControl" placeholder="Buscar programadores...">
     </div>
-
   </div>
 
+  <div class="programadores-grid">
+    <ng-container *ngIf="(filteredProgrammers$ | async) as programadores">
+      <div *ngIf="programadores.length === 0" class="no-results">
+        <p>No hay programadores disponibles o no se encontraron resultados.</p>
+      </div>
+      
+      <!-- El contenido de las tarjetas será generado dinámicamente por el backend -->
+      <div *ngFor="let programador of programadores" class="programmer-card">
+        <img [src]="programador.photoURL" alt="Foto de {{programador.displayName}}" class="profile-pic">
+        <div class="card-content">
+          <h3>{{ programador.displayName }}</h3>
+          <p class="specialty">{{ programador.especialidad }}</p>
+          <div class="card-buttons">
+            <button *ngIf="!isAgendaMode" [routerLink]="['/ver-perfil', programador.uid]" class="btn-profile">Ver Perfil</button>
+            <button [routerLink]="['/agendar', programador.uid]" class="btn btn-secondary">Agendar Asesoría</button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
 </section>

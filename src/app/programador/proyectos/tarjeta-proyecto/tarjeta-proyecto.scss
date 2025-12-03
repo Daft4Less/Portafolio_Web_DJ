@@ -1,81 +1,153 @@
-.tarjeta {
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden; 
+.tarjeta-proyecto {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
-  background-color: #ffffff;
-  transition: transform 0.2s ease-in-out; 
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 
   &:hover {
-    transform: translateY(-5px); 
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
   }
 
   .tarjeta-imagen {
     width: 100%;
-    height: 200px; 
-    object-fit: cover; 
-    border-bottom: 1px solid #e0e0e0;
+    height: 200px;
+    object-fit: cover;
   }
 
   .tarjeta-contenido {
-    padding: 15px;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    flex-grow: 1; 
-  }
+    flex-grow: 1;
+    align-items: center; 
 
-  .tarjeta-titulo {
-    font-size: 1.5em;
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: #333;
-  }
-
-  .tarjeta-descripcion {
-    font-size: 0.95em;
-    color: #666;
-    line-height: 1.5;
-    flex-grow: 1; 
-  }
-
-  .tecnologias {
-    margin-top: 15px;
-    margin-bottom: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px; 
-
-    .tecnologia {
-      background-color: #e9ecef;
-      color: #495057;
-      padding: 5px 10px;
-      border-radius: 5px;
-      font-size: 0.8em;
-      white-space: nowrap; 
+    h3 {
+      font-size: 1.6rem;
+      margin: 0 0 0.75rem 0;
+      color: #343a40;
+      font-weight: 600;
+      text-align: center; 
     }
-  }
 
-  .tarjeta-acciones {
-    margin-top: 15px;
-    display: flex;
-    justify-content: flex-end; 
-    gap: 10px;
+    .descripcion {
+      font-size: 1rem;
+      color: #6c757d;
+      line-height: 1.6;
+      flex-grow: 1;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .project-details {
+      margin-top: auto;
+      padding-top: 1rem;
+      border-top: 1px solid #f0f0f0;
+      text-align: center; 
+      width: 100%;
 
-    .btn-accion {
-      background-color: #007bff;
-      color: white;
-      padding: 8px 15px;
-      border-radius: 5px;
-      text-decoration: none;
-      font-size: 0.9em;
-      transition: background-color 0.2s ease;
+      p {
+        font-size: 0.9rem;
+        color: #495057;
+        margin-bottom: 0.5rem;
+        strong {
+          color: #343a40;
+        }
+      }
+    }
 
-      &:hover {
-        background-color: #0056b3;
+    .technologies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      justify-content: center; 
+      margin-top: 0.5rem;
+
+      .tech-tag {
+        background-color: #e9ecef;
+        color: #495057;
+        padding: 0.3em 0.7em;
+        border-radius: 15px;
+        font-size: 0.8rem;
       }
     }
   }
+
+  .tarjeta-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 1.5rem 0 0 0;
+  margin-top: 1rem;
+
+  .enlaces-externos {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .btn-enlace {
+    background-color: #6c757d;
+    color: white;
+    padding: 0.6rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.2s ease;
+
+    i {
+      font-size: 1rem;
+    }
+
+    &:hover {
+      background-color: #5a6268;
+    }
+
+    &.btn-despliegue {
+      background-color: #28a745;
+      &:hover {
+        background-color: #218838;
+      }
+    }
+  }
+
+  .acciones-edicion {
+    display: flex;
+    gap: 0.75rem;
+
+    .btn-accion {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+
+      i {
+        font-size: 1.1rem;
+      }
+
+      &.btn-editar {
+        color: #ffc107;
+        &:hover { background-color: #fff8e1; }
+      }
+
+      &.btn-eliminar {
+        color: #dc3545;
+        &:hover { background-color: #fbebed; }
+      }
+    }
+  }
+}
 }
