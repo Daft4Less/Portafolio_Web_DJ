@@ -40,8 +40,10 @@ export class AppComponent implements OnInit, OnDestroy {
   // Escucha cambios en el localStorage desde OTRAS pestañas
   @HostListener('window:storage', ['$event'])
   onStorageChange(event: StorageEvent): void {
-    // Revisa cualquier notificación relevante cuando el storage cambia
-    if (this.currentUser && event.key?.startsWith('notificacion')) {
+    // Revisa cualquier notificación relevante cuando el storage cambia para el usuario actual
+    if (this.currentUser && event.key && event.key.startsWith('notificacion_asesoria_para_') && event.key.includes(this.currentUser.uid)) {
+      this.revisarNotificacionesPorRol(this.currentUser);
+    } else if (this.currentUser && event.key && event.key.startsWith('nueva_solicitud_para_') && event.key.includes(this.currentUser.uid)) {
       this.revisarNotificacionesPorRol(this.currentUser);
     }
   }
@@ -54,14 +56,16 @@ export class AppComponent implements OnInit, OnDestroy {
         this.notificationService.show('Tienes nuevas solicitudes de asesoría.', 'info');
         localStorage.removeItem(key);
       }
-    } else { // Para 'Usuario normal' y otros roles
-      const notificacion = localStorage.getItem('notificacion_asesoria');
+    } else if (user.role === 'Usuario normal') {
+      const notificacionKey = 'notificacion_asesoria_para_' + user.uid;
+      const notificacion = localStorage.getItem(notificacionKey);
       if (notificacion) {
         const tipo = notificacion.includes('APROBADA') ? 'success' : 'error';
         this.notificationService.show(notificacion, tipo);
-        localStorage.removeItem('notificacion_asesoria');
+        localStorage.removeItem(notificacionKey);
       }
     }
+    // El rol de Administrador no hará nada y no recibirá estas notificaciones.
   }
 
   ngOnDestroy() {

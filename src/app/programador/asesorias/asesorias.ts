@@ -43,9 +43,13 @@ export class Asesorias implements OnInit, OnDestroy {
   async aceptarAsesoria(id: string): Promise<void> {
     try {
       await this.asesoriasService.updateEstadoAsesoria(id, 'aprobada');
-      this.notificationService.show('Asesoría aprobada', 'success');
-      console.log("Simulación: Notificación para el usuario con estado 'Aprobada' registrada.");
-      localStorage.setItem('notificacion_asesoria', 'Tu solicitud de asesoría ha sido APROBADA');
+      const asesoria = this.asesorias.find(a => a.id === id);
+      if (asesoria) {
+        const notificacionKey = 'notificacion_asesoria_para_' + asesoria.solicitanteId;
+        this.notificationService.show('Asesoría aprobada', 'success');
+        console.log(`Simulación: Asesoría ${id} aprobada. Notificación para el usuario ${asesoria.solicitanteId} con estado 'Aprobada' registrada.`);
+        localStorage.setItem(notificacionKey, 'Tu solicitud de asesoría ha sido APROBADA');
+      }
       this.cargarAsesorias(); // Recargar la lista
     } catch (error) {
       console.error('Error al aceptar la asesoría:', error);
@@ -56,7 +60,13 @@ export class Asesorias implements OnInit, OnDestroy {
   async finalizarAsesoria(id: string): Promise<void> {
     try {
       await this.asesoriasService.updateEstadoAsesoria(id, 'finalizada');
-      this.notificationService.show('Asesoría marcada como finalizada', 'info');
+      const asesoria = this.asesorias.find(a => a.id === id);
+      if (asesoria) {
+        const notificacionKey = 'notificacion_asesoria_para_' + asesoria.solicitanteId;
+        this.notificationService.show('Asesoría marcada como finalizada', 'info');
+        console.log(`Simulación: Asesoría ${id} finalizada. Notificación para el usuario ${asesoria.solicitanteId} con estado 'Finalizada' registrada.`);
+        localStorage.setItem(notificacionKey, 'Tu solicitud de asesoría ha sido FINALIZADA');
+      }
       this.cargarAsesorias(); // Recargar la lista
     } catch (error) {
       console.error('Error al finalizar la asesoría:', error);
@@ -67,9 +77,13 @@ export class Asesorias implements OnInit, OnDestroy {
   async rechazarAsesoria(id: string): Promise<void> {
     try {
       await this.asesoriasService.updateEstadoAsesoria(id, 'rechazada');
-      this.notificationService.show('Asesoría rechazada', 'info');
-      console.log("Simulación: Notificación para el usuario con estado 'Rechazada' registrada.");
-      localStorage.setItem('notificacion_asesoria', 'Tu solicitud de asesoría ha sido RECHAZADA');
+      const asesoria = this.asesorias.find(a => a.id === id);
+      if (asesoria) {
+        const notificacionKey = 'notificacion_asesoria_para_' + asesoria.solicitanteId;
+        this.notificationService.show('Asesoría rechazada', 'info');
+        console.log(`Simulación: Asesoría ${id} rechazada. Notificación para el usuario ${asesoria.solicitanteId} con estado 'Rechazada' registrada.`);
+        localStorage.setItem(notificacionKey, 'Tu solicitud de asesoría ha sido RECHAZADA');
+      }
       this.cargarAsesorias(); // Recargar la lista
     } catch (error) {
       console.error('Error al rechazar la asesoría:', error);
