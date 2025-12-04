@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { startWith, map, switchMap, takeUntil } from 'rxjs/operators';
 
@@ -21,14 +21,12 @@ export class Programadores implements OnInit, OnDestroy {
   allProgrammers$ = this.allProgrammers.asObservable();
   
   filteredProgrammers$: Observable<UserProfile[]>;
-  isAgendaMode: boolean = false;
 
   searchControl = new FormControl('');
   private unsubscribe$ = new Subject<void>();
 
   constructor(
-    private programmersService: ProgramadoresService,
-    private route: ActivatedRoute
+    private programmersService: ProgramadoresService
   ) {
     this.filteredProgrammers$ = this.searchControl.valueChanges.pipe(
       startWith(''),
@@ -39,12 +37,6 @@ export class Programadores implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.route.queryParamMap.pipe(
-      takeUntil(this.unsubscribe$)
-    ).subscribe(params => {
-      this.isAgendaMode = params.get('mode') === 'agendar';
-    });
-
     this.programmersService.getAllProgramadores().pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe((programmers: UserProfile[]) => {

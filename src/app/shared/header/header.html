@@ -3,34 +3,41 @@
     <h1>Portafolio Dev</h1>
   </div>
 
+  <button class="cabecera__menu-toggle" (click)="toggleMenu()" [class.is-active]="isMenuOpen">
+    <span class="sr-only">Toggle menu</span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+
   <ng-container *ngIf="!(isLoginPage$ | async)">
-    <nav class="cabecera__nav">
+    <nav class="cabecera__nav" [class.is-open]="isMenuOpen">
       <ng-container *ngIf="currentUser$ | async as user">
         <!-- Links for 'Usuario normal' and common ones -->
         <ng-container *ngIf="user.role === 'Usuario normal'">
-          <a routerLink="/inicio" routerLinkActive="active">Inicio</a>
-          <a routerLink="/programadores" routerLinkActive="active">Programadores</a>
+          <a routerLink="/inicio" routerLinkActive="active" (click)="isMenuOpen = false">Inicio</a>
+          <a routerLink="/programadores" routerLinkActive="active" (click)="isMenuOpen = false">Programadores</a>
         </ng-container>
 
         <!-- Links for 'Programador' -->
         <ng-container *ngIf="user.role === 'Programador'">
-          <a routerLink="/programador/proyectos" routerLinkActive="active">Mis Proyectos</a>
-          <a routerLink="/programador/asesorias" routerLinkActive="active">Mis Asesorías</a>
+          <a routerLink="/programador/proyectos" routerLinkActive="active" (click)="isMenuOpen = false">Mis Proyectos</a>
+          <a routerLink="/programador/asesorias" routerLinkActive="active" (click)="isMenuOpen = false">Mis Asesorías</a>
         </ng-container>
 
         <!-- Links for 'Administrador' -->
         <ng-container *ngIf="user.role === 'Administrador'">
-          <a routerLink="/admin/adm-programadores" routerLinkActive="active">Gestión Programadores</a>
-          <a routerLink="/admin/adm-usuarios" routerLinkActive="active">Gestión Usuarios</a>
-          <a routerLink="/admin/adm-asesorias" routerLinkActive="active">Gestión Asesorías</a>
+          <a routerLink="/admin/adm-programadores" routerLinkActive="active" (click)="isMenuOpen = false">Gestión Programadores</a>
+          <a routerLink="/admin/adm-usuarios" routerLinkActive="active" (click)="isMenuOpen = false">Gestión Usuarios</a>
+          <a routerLink="/admin/adm-asesorias" routerLinkActive="active" (click)="isMenuOpen = false">Gestión Asesorías</a>
         </ng-container>
         
-        <a routerLink="/login" (click)="onLogout()" routerLinkActive="active">Cerrar Sesion</a>
+        <a routerLink="/login" (click)="onLogout(); isMenuOpen = false" routerLinkActive="active">Cerrar Sesion</a>
       </ng-container>
       
       <!-- Links for unauthenticated users -->
       <ng-container *ngIf="!(currentUser$ | async)">
-        <a routerLink="/login" routerLinkActive="active">Iniciar Sesión</a>
+        <a routerLink="/login" routerLinkActive="active" (click)="isMenuOpen = false">Iniciar Sesión</a>
       </ng-container>
     </nav>
   </ng-container>

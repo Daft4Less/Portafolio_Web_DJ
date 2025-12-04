@@ -16,6 +16,7 @@ export class Header implements OnInit {
 
   currentUser$: Observable<UserProfile | null>;
   isLoginPage$: Observable<boolean>; // New observable to track if it's the login page
+  isMenuOpen = false;
 
   constructor(private router: Router, private authService: AutenticacionService) {
     this.currentUser$ = this.authService.getUsuarioActual();
@@ -29,6 +30,10 @@ export class Header implements OnInit {
 
   ngOnInit() {
     // No longer need to subscribe to shouldShowHeader$ here, as header is always visible
+  }
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
   }
 
   onLogout() {

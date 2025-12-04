@@ -172,3 +172,38 @@
     }
   }
 }
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 4rem 1rem;
+
+    .hero-content {
+      h1 {
+        font-size: 2.5rem;
+      }
+
+      p {
+        font-size: 1.1rem;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: center;
+
+        .btn {
+          width: 100%;
+          max-width: 320px;
+        }
+      }
+    }
+  }
+
+  .featured-programmers,
+  .popular-projects {
+    padding: 3rem 1rem;
+
+    h2 {
+      font-size: 2rem;
+    }
+  }
+}

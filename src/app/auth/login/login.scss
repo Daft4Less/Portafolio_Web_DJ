@@ -135,9 +135,68 @@
 }
 
 .login-footer {
-  position: absolute;
-  bottom: 2rem;
+  position: relative; // Change to relative
+  bottom: unset;
+  margin-top: 2rem;
   text-align: center;
   color: #555;
   font-size: 0.85rem;
 }
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .login-page {
+    grid-template-columns: 1fr; // Single column layout
+    padding: 1rem;
+    display: flex; // Use flex for better vertical alignment on single column
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .login-branding {
+    display: none; // Hide branding on small screens
+  }
+
+  .login-form-wrapper {
+    width: 100%;
+    max-width: 400px; // Keep max-width for form
+    padding: 1rem;
+    justify-content: flex-start; // Align content to top
+    background-color: transparent; // No background on mobile
+  }
+
+  .login-card {
+    padding: 1.5rem; // Adjust card padding
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); // Add shadow to card
+    border-radius: 12px;
+    background-color: #fff;
+  }
+
+  .login-card h2 {
+    font-size: 1.8rem; // Smaller font size
+  }
+
+  .login-card .descripcion {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .login-footer {
+    position: relative; // Ensure it's relative
+    bottom: unset;
+    margin-top: 1.5rem;
+    padding-bottom: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    max-width: 100%; // Allow card to take full width on very small screens
+  }
+
+  .login-card h2 {
+    font-size: 1.5rem;
+  }
+}
+
