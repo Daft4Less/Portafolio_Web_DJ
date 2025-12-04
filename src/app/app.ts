@@ -37,7 +37,7 @@ export class AppComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Escucha cambios en el localStorage desde OTRAS pestañas
+  // Escucha cambios en el localStorage desde otras pestañas
   @HostListener('window:storage', ['$event'])
   onStorageChange(event: StorageEvent): void {
     // Revisa cualquier notificación relevante cuando el storage cambia para el usuario actual
@@ -65,7 +65,7 @@ export class AppComponent implements OnInit, OnDestroy {
         localStorage.removeItem(notificacionKey);
       }
     }
-    // El rol de Administrador no hará nada y no recibirá estas notificaciones.
+    
   }
 
   ngOnDestroy() {

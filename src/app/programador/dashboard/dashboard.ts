@@ -4,10 +4,9 @@ import { RouterLink } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { ProgramadoresService, DashboardStats } from '../../services/programadores.service';
 import { AutenticacionService, UserProfile } from '../../services/autenticacion.service';
 
-// Interfaz local para la actividad reciente (sin cambios por ahora).
+//Define la estructura de un elemento de actividad reciente
 interface ActividadReciente {
   id: string;
   tipo: 'asesoria' | 'proyecto' | 'otro';
@@ -15,6 +14,7 @@ interface ActividadReciente {
   fecha: Date;
 }
 
+// Componente principal del dashboard para el programador autenticado - Muestra información general como el nombre de usuario y estadísticas resumen
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -24,52 +24,44 @@ interface ActividadReciente {
 })
 export class Dashboard implements OnInit, OnDestroy {
 
-  nombreUsuario: string = '';
-  // El nombre de la propiedad en el HTML es 'proyectosCompletados', lo mapeamos a totalProyectos
-  proyectosCompletados: number = 0; 
-  asesoriasPendientes: number = 0;
-  asesoriasCompletadas: number = 0;
+  nombreUsuario: string = ''; // Almacena el nombre de visualización del usuario actual
+  proyectosCompletados: number = 0; // Número total de proyectos completados (mapeado desde totalProyectos en el servicio)
+  asesoriasPendientes: number = 0; // Número de asesorías pendientes
+  asesoriasCompletadas: number = 0; // Número de asesorías completadas
 
-  actividadReciente: ActividadReciente[] = []; // Vacío, el backend lo llenará
+  actividadReciente: ActividadReciente[] = []; // Array para almacenar elementos de actividad reciente
 
-  private unsubscribe$ = new Subject<void>();
+
+  private unsubscribe$ = new Subject<void>(); // Subject para gestionar la desuscripción de Observables
 
   constructor(
-    private programadoresService: ProgramadoresService,
-    private authService: AutenticacionService
+    private authService: AutenticacionService // Servicio para obtener información del usuario autenticado
   ) { }
 
+  //Cargar el nombre del usuario al iniciar el dashboard.
   ngOnInit(): void {
-    this.cargarEstadisticas();
-    this.cargarNombreUsuario();
+    this.cargarNombreUsuario(); 
   }
 
+  //Descubre todos los Observables y evitar fugas de memoria.
   ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+    this.unsubscribe$.next(); 
+    this.unsubscribe$.complete(); 
   }
 
-  cargarEstadisticas(): void {
-    this.programadoresService.getDashboardStats().pipe(
-      takeUntil(this.unsubscribe$)
-    ).subscribe((stats: DashboardStats) => {
-      this.proyectosCompletados = stats.totalProyectos;
-      this.asesoriasPendientes = stats.asesoriasPendientes;
-      this.asesoriasCompletadas = stats.asesoriasCompletadas;
-    });
-  }
 
+  // Carga el nombre de visualización del usuario actual desde el servicio de autenticación
   cargarNombreUsuario(): void {
     this.authService.getUsuarioActual().pipe(
-      takeUntil(this.unsubscribe$)
+      takeUntil(this.unsubscribe$) // Gestiona la desuscripción al destruir el componente
     ).subscribe((user: UserProfile | null) => {
       if (user) {
-        this.nombreUsuario = user.displayName;
+        this.nombreUsuario = user.displayName; // Establece el nombre de usuario si el usuario está autenticado
       }
     });
   }
 
-  // Métodos de ejemplo que no tienen lógica por ahora, solo para simular interacciones.
+  //Método placeholder para visualizar los detalles de una actividad específica - imprime un mensaje en la consola
   verDetallesActividad(id: string): void {
     console.log(`Backend debe implementar: Ver detalles de actividad con ID: ${id}`);
   }

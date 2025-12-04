@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, collectionData, doc, getDoc, setDoc, updateDoc, deleteDoc, CollectionReference, query, where, Timestamp } from '@angular/fire/firestore';
-import { Observable, from, of, firstValueFrom } from 'rxjs';
+import { Observable, of, firstValueFrom } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Asesoria } from '../models/asesoria.model';
 import { AutenticacionService } from './autenticacion.service';
 
+
+// Gestión de asesorías entre usuarios y programadores en FS
+// Usuario solicita - Programador gestiona
 @Injectable({
   providedIn: 'root'
 })
@@ -13,13 +16,15 @@ export class AsesoriasService {
   private asesoriasCollection: CollectionReference<Asesoria>;
 
   constructor(
-    private firestore: Firestore,
-    private authService: AutenticacionService
+    private firestore: Firestore, 
+    private authService: AutenticacionService 
     ) {
+    // Inicializa la referencia a la colección 'asesorias' en Firestore
     this.asesoriasCollection = collection(this.firestore, 'asesorias') as CollectionReference<Asesoria>;
   }
 
-  // Crea una nueva solicitud de asesoría (Usado por /publico/agendar)
+
+  // CREAR() una nueva solicitud de asesoría FS
   addSolicitudAsesoria(solicitud: { programadorId: string; fecha: string; hora: string; comentario: string }): Promise<void> {
     return firstValueFrom(this.authService.getUsuarioActual().pipe(
       switchMap(async user => {
@@ -32,12 +37,12 @@ export class AsesoriasService {
         const nuevaAsesoria: Asesoria = {
           id: docRef.id,
           programadorId: solicitud.programadorId,
-          // La fecha del formulario es un string, hay que convertirla a Date y luego a Timestamp
+          // Convierte la fecha y hora de string a Timestamp de FS
           fecha: Timestamp.fromDate(new Date(`${solicitud.fecha}T${solicitud.hora}`)),
           comentario: solicitud.comentario,
           solicitanteId: user.uid,
           solicitanteNombre: user.displayName,
-          estado: 'pendiente'
+          estado: 'pendiente' 
         };
         
         return setDoc(docRef, nuevaAsesoria);
@@ -45,20 +50,22 @@ export class AsesoriasService {
     ));
   }
 
-  // Obtiene las asesorías para el programador autenticado
+
+  // OBTIENER() asesorías del programador autenticado
   getAsesorias(): Observable<Asesoria[]> {
     return this.authService.getUsuarioActual().pipe(
       switchMap(user => {
         if (user) {
           return this.getAsesoriasParaProgramador(user.uid);
         } else {
-          return of([]);
+          return of([]); 
         }
       })
     );
   }
   
-  // Actualiza el estado de una asesoría con validación de permisos
+
+  //ACTUALIZAR() estado de una asesoría e incluye una respuesta del programador
   updateEstadoAsesoria(asesoriaId: string, estado: 'aprobada' | 'rechazada' | 'finalizada', respuesta?: string): Promise<void> {
     return firstValueFrom(this.authService.getUsuarioActual().pipe(
       switchMap(async user => {
@@ -69,6 +76,7 @@ export class AsesoriasService {
         const asesoriaDocRef = doc(this.asesoriasCollection, asesoriaId);
         const docSnap = await getDoc(asesoriaDocRef);
 
+        // Verifica que la asesoría exista y que el usuario autenticado sea el programador asociado
         if (!docSnap.exists() || docSnap.data()['programadorId'] !== user.uid) {
           throw new Error('Permiso denegado. No puedes modificar esta asesoría.');
         }
@@ -83,28 +91,19 @@ export class AsesoriasService {
     ));
   }
 
-  // --- Métodos existentes (se mantienen por posible uso en otras partes como Admin) ---
 
-  // Obtiene las asesorías solicitadas a un programador específico
+  // OBTIENE() asesorías con el id del programador
   getAsesoriasParaProgramador(programadorId: string): Observable<Asesoria[]> {
     const q = query(this.asesoriasCollection, where('programadorId', '==', programadorId));
     return collectionData(q, { idField: 'id' });
   }
 
-  // Obtiene las asesorías que un usuario específico ha solicitado
+
+  // OBTIENE() asesoria con el id del usuario solocitante 
   getAsesoriasDeSolicitante(solicitanteId: string): Observable<Asesoria[]> {
     const q = query(this.asesoriasCollection, where('solicitanteId', '==', solicitanteId));
     return collectionData(q, { idField: 'id' });
   }
 
-  // (Opcional) Obtiene todas las asesorías (para el administrador)
-  getAllAsesorias(): Observable<Asesoria[]> {
-    return collectionData(this.asesoriasCollection, { idField: 'id' });
-  }
-
-  // (Opcional) Eliminar una asesoría (solo admin)
-  async deleteAsesoria(asesoriaId: string): Promise<void> {
-    const asesoriaDocRef = doc(this.asesoriasCollection, asesoriaId);
-    return deleteDoc(asesoriaDocRef);
-  }
+  
 }
