@@ -198,6 +198,9 @@
 
   .profile-header {
     margin: -1rem -1rem 1rem -1rem; // Adjust for smaller padding
+    .header-content .header-info h1 {
+      font-size: 2rem;
+    }
   }
 
   .profile-content .profile-details {

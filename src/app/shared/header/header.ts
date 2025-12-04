@@ -15,8 +15,9 @@ import { AutenticacionService, UserProfile } from '../../services/autenticacion.
 })
 export class Header implements OnInit {
 
-  currentUser$: Observable<UserProfile | null>; // Observable que emite el perfil del usuario actualmente autenticado
-  isLoginPage$: Observable<boolean>; // Observable que emite `true` si la página actual es la de login
+  currentUser$: Observable<UserProfile | null>;
+  isLoginPage$: Observable<boolean>; // New observable to track if it's the login page
+  isMenuOpen = false;
 
 
   constructor(
@@ -39,7 +40,10 @@ export class Header implements OnInit {
     // y en el template (con el pipe async), haciendo que este método sea opcionalmente vacío.
   }
 
-  // Maneja la acción de cerrar sesión del usuario.
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
   onLogout() {
     this.authService.logout().then(() => {
       this.router.navigate(['/login']); // Redirige a la página de login después de cerrar sesión

@@ -23,7 +23,7 @@
           <h3>{{ programador.displayName }}</h3>
           <p class="specialty">{{ programador.especialidad }}</p>
           <div class="card-buttons">
-            <button *ngIf="!isAgendaMode" [routerLink]="['/ver-perfil', programador.uid]" class="btn-profile">Ver Perfil</button>
+            <button [routerLink]="['/ver-perfil', programador.uid]" class="btn-profile">Ver Perfil</button>
             <button [routerLink]="['/agendar', programador.uid]" class="btn btn-secondary">Agendar Asesoría</button>
           </div>
         </div>

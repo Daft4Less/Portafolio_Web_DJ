@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { startWith, map, switchMap, takeUntil } from 'rxjs/operators';
 
@@ -23,15 +23,13 @@ export class Programadores implements OnInit, OnDestroy {
   private allProgrammers = new BehaviorSubject<UserProfile[]>([]); // Almacena la lista completa de programadores
   allProgrammers$ = this.allProgrammers.asObservable(); // Observable de la lista completa
   
-  filteredProgrammers$: Observable<UserProfile[]>; // Observable de la lista de programadores filtrada
-  isAgendaMode: boolean = false; 
+  filteredProgrammers$: Observable<UserProfile[]>;
 
   searchControl = new FormControl(''); // Control de formulario para el campo de búsqueda
   private unsubscribe$ = new Subject<void>();
 
   constructor(
-    private programmersService: ProgramadoresService, // Servicio para obtener y gestionar datos de programadores
-    private route: ActivatedRoute // Servicio para acceder a la información de la ruta actual
+    private programmersService: ProgramadoresService
   ) {
     // Realiza un filtrado dinámico de los programadores mostrados.
     this.filteredProgrammers$ = this.searchControl.valueChanges.pipe(
@@ -44,14 +42,6 @@ export class Programadores implements OnInit, OnDestroy {
 
   // Carga la lista de programadores
   ngOnInit(): void {
-    // Suscribe a los parámetros de la URL para detectar si el modo es 'agendar'
-    this.route.queryParamMap.pipe(
-      takeUntil(this.unsubscribe$) // Gestiona la desuscripción al destruir el componente
-    ).subscribe(params => {
-      this.isAgendaMode = params.get('mode') === 'agendar';
-    });
-
-    // Carga todos los programadores del servicio y los almacena en allProgrammers
     this.programmersService.getAllProgramadores().pipe(
       takeUntil(this.unsubscribe$) // Gestiona la desuscripción al destruir el componente
     ).subscribe((programmers: UserProfile[]) => {
