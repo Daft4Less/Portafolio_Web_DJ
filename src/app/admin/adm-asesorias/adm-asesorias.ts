@@ -55,7 +55,34 @@ export class AdmAsesorias implements OnInit {
       ),
       startTime: ['', Validators.required], // Hora de inicio del horario, campo requerido
       endTime: ['', Validators.required], // Hora de fin del horario, campo requerido
-      isAvailable: [true] // Indica si el horario está disponible (por defecto, true)
+      isAvailable: [true], // Indica si el horario está disponible (por defecto, true)
+      startDateOffService: [{ value: '', disabled: true }], // Fecha de inicio de no disponibilidad, inicialmente deshabilitado
+      endDateOffService: [{ value: '', disabled: true }] // Fecha de fin de no disponibilidad, inicialmente deshabilitado
+    });
+
+    // Suscribirse a los cambios del control isAvailable
+    this.scheduleForm.get('isAvailable')?.valueChanges.subscribe(isAvailable => {
+      const startDateControl = this.scheduleForm.get('startDateOffService');
+      const endDateControl = this.scheduleForm.get('endDateOffService');
+
+      if (!isAvailable) {
+        // Si no está disponible, habilitar los campos de fecha y hacerlos requeridos
+        startDateControl?.enable();
+        startDateControl?.setValidators(Validators.required);
+        endDateControl?.enable();
+        endDateControl?.setValidators(Validators.required);
+      } else {
+        // Si está disponible, deshabilitar los campos de fecha, limpiar sus valores y remover los validadores
+        startDateControl?.disable();
+        startDateControl?.clearValidators();
+        startDateControl?.setValue('');
+        endDateControl?.disable();
+        endDateControl?.clearValidators();
+        endDateControl?.setValue('');
+      }
+      // Actualizar la validez del formulario para reflejar los cambios en los validadores
+      startDateControl?.updateValueAndValidity();
+      endDateControl?.updateValueAndValidity();
     });
   }
 
@@ -89,7 +116,9 @@ export class AdmAsesorias implements OnInit {
       daysOfWeek: daysOfWeekState,
       startTime: schedule.startTime,
       endTime: schedule.endTime,
-      isAvailable: schedule.isAvailable
+      isAvailable: schedule.isAvailable,
+      startDateOffService: schedule.startDateOffService || '', // Cargar la fecha de inicio de no disponibilidad si existe
+      endDateOffService: schedule.endDateOffService || ''     // Cargar la fecha de fin de no disponibilidad si existe
     });
 
     // Deshabilita la selección de días de la semana en modo edición
@@ -112,11 +141,24 @@ export class AdmAsesorias implements OnInit {
     }
 
     const formValue = this.scheduleForm.getRawValue();
-    const { id, startTime, endTime, isAvailable } = formValue;
+    const { id, startTime, endTime, isAvailable, startDateOffService, endDateOffService } = formValue;
+
+    // Nueva validación: si no está disponible, la fecha de inicio no puede ser posterior a la de fin
+    if (!isAvailable && new Date(startDateOffService) > new Date(endDateOffService)) {
+      alert('La fecha de inicio de no disponibilidad no puede ser posterior a la fecha de fin.');
+      return;
+    }
 
     try {
       if (id) { // Modo Edición: si el formulario tiene un ID, se actualiza un horario existente
-        const scheduleToUpdate = { startTime, endTime, isAvailable };
+        const scheduleToUpdate = { 
+          startTime, 
+          endTime, 
+          isAvailable,
+          // Añadir las fechas de no disponibilidad si el horario no está disponible
+          startDateOffService: !isAvailable ? startDateOffService : '',
+          endDateOffService: !isAvailable ? endDateOffService : ''
+        };
         await this.programmerScheduleService.updateSchedule(programmer.uid, id, scheduleToUpdate);
         
         // Actualiza los datos locales del programador seleccionado para reflejar el cambio en la UI
@@ -144,7 +186,10 @@ export class AdmAsesorias implements OnInit {
             dayOfWeek: day,
             startTime,
             endTime,
-            isAvailable
+            isAvailable,
+            // Añadir las fechas de no disponibilidad si el horario no está disponible
+            startDateOffService: !isAvailable ? startDateOffService : '',
+            endDateOffService: !isAvailable ? endDateOffService : ''
           };
           await this.programmerScheduleService.addSchedule(programmer.uid, newSchedule);
         }
@@ -200,7 +245,12 @@ export class AdmAsesorias implements OnInit {
   //Restablece el formulario a su estado inicial para una nueva adición
   cancelScheduleEdit(): void {
     this.selectedScheduleSubject.next(null); // Borra el horario que estaba siendo editado
-    this.scheduleForm.reset({ isAvailable: true }); // Resetea el formulario a sus valores por defecto
+    // Resetea el formulario a sus valores por defecto, incluyendo los campos de fecha de no disponibilidad
+    this.scheduleForm.reset({ 
+      isAvailable: true,
+      startDateOffService: '',
+      endDateOffService: ''
+    }); 
     this.scheduleForm.get('daysOfWeek')?.enable(); // Habilita la selección de días para permitir añadir nuevos horarios
   }
 }

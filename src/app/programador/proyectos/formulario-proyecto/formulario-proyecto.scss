@@ -26,7 +26,8 @@
     }
 
     input,
-    textarea {
+    textarea,
+    select { // Aplicar estilos también a los select
       width: 100%;
       padding: 0.75rem 1rem;
       border: 1px solid #ced4da;
@@ -35,6 +36,17 @@
       box-sizing: border-box;
       transition: border-color 0.2s, box-shadow 0.2s;
 
+      // Estilos específicos para select
+      -webkit-appearance: none; // Remover estilo nativo en Webkit
+      -moz-appearance: none;    // Remover estilo nativo en Mozilla
+      appearance: none;         // Remover estilo nativo general
+      background-color: #fff;   // Asegurar fondo blanco
+      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%00-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4s-5.6%208.3-5.6%2013c0%204.7%201.8%209.3%205.6%2013l128%20127.9c3.7%203.7%208.3%205.6%2012.9%205.6s9.3-1.8%2012.9-5.6l128-127.9c3.7-3.6%205.6-8.2%205.6-12.9%200-4.7-1.9-9.3-5.7-13z%22%2F%3E%3C%2Fsvg%3E'); // Flecha SVG azul
+      background-repeat: no-repeat;
+      background-position: right 0.7rem top 50%;
+      background-size: 0.65rem auto;
+      padding-right: 2.5rem; // Espacio extra para la flecha
+      
       &:focus {
         border-color: #80bdff;
         outline: none;

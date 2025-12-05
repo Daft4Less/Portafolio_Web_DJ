@@ -122,6 +122,10 @@ export class Asesorias implements OnInit, OnDestroy {
       const asesoria = this.allAsesorias.find(a => a.id === id); // Busca la asesoría en la lista local
       if (asesoria) {
         asesoria.estado = 'aprobada'; // Actualiza el estado localmente para reflejar el cambio en la UI
+        
+        // Log para simular el envío de un mensaje de WhatsApp
+        console.log(`Se enviará mensaje de confirmacion al whatsapp de ${asesoria.solicitanteNombre}`);
+
         const notificacionKey = 'notificacion_asesoria_para_' + asesoria.solicitanteId;
         this.notificationService.show('Asesoría aprobada', 'success'); // Muestra notificación de éxito
         localStorage.setItem(notificacionKey, 'Tu solicitud de asesoría ha sido APROBADA'); // Almacena notificación para el solicitante

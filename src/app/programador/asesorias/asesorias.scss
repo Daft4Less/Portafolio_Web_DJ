@@ -49,6 +49,17 @@
         border-color: #0a66c2;
       }
     }
+
+    // Ajustes para dispositivos móviles
+    @media (max-width: 768px) {
+      flex-wrap: wrap; // Permite que los botones se envuelvan a la siguiente línea
+      gap: 0.5rem; // Reduce el espacio entre botones
+
+      button {
+        padding: 0.6rem 1rem; // Reduce el padding para que los botones sean más pequeños
+        font-size: 0.9rem; // Reduce el tamaño de la fuente
+      }
+    }
   }
 
   .contenido {

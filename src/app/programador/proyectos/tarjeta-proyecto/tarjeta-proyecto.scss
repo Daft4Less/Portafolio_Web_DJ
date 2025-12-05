@@ -119,35 +119,43 @@
     }
   }
 
-  .acciones-edicion {
-    display: flex;
-    gap: 0.75rem;
-
-    .btn-accion {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 0.5rem;
-      border-radius: 5px;
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-
-      i {
-        font-size: 1.1rem;
-      }
-
-      &.btn-editar {
-        color: #ffc107;
-        &:hover { background-color: #fff8e1; }
-      }
-
-      &.btn-eliminar {
-        color: #dc3545;
-        &:hover { background-color: #fbebed; }
-      }
-    }
-  }
-}
+      .acciones-edicion {
+        display: flex;
+        gap: 0.75rem;
+  
+        .btn-accion {
+          // Eliminar background: none; para permitir que el background-color sea visible
+          border: none;
+          cursor: pointer;
+          padding: 0.5rem;
+          border-radius: 5px;
+          font-size: 0.9rem;
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+          transition: background-color 0.2s ease, color 0.2s ease; // Transición para color también
+  
+          i {
+            font-size: 1.1rem;
+          }
+  
+          &.btn-editar {
+            background-color: #ffc107; // Fondo amarillo
+            color: white; // Texto blanco
+            &:hover {
+              background-color: darken(#ffc107, 10%); // Amarillo más oscuro en hover
+              color: white;
+            }
+          }
+  
+          &.btn-eliminar {
+            background-color: #dc3545; // Fondo rojo
+            color: white; // Texto blanco
+            &:hover {
+              background-color: darken(#dc3545, 10%); // Rojo más oscuro en hover
+              color: white;
+            }
+          }
+        }
+      }}
 }

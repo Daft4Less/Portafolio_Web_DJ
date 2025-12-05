@@ -64,6 +64,7 @@
             <div formGroupName="daysOfWeek" class="days-of-week">
               <label *ngFor="let day of daysOfWeekArray; let i = index" class="checkbox-container">
                 <input type="checkbox" [formControlName]="i">
+                <span class="checkmark"></span> <!-- Pseudo-elemento para el checkbox personalizado -->
                 {{ day }}
               </label>
             </div>
@@ -79,8 +80,23 @@
             </div>
             <label class="checkbox-container">
               <input type="checkbox" formControlName="isAvailable">
+              <span class="checkmark"></span> <!-- Pseudo-elemento para el checkbox personalizado -->
               Disponible
             </label>
+            
+            <!-- Contenedor para las fechas de no disponibilidad -->
+            <!-- Se muestra solo si el checkbox 'isAvailable' está desmarcado -->
+            <div *ngIf="!scheduleForm.get('isAvailable')?.value" class="out-of-service-dates">
+              <label>
+                No estaré disponible desde:
+                <input type="date" formControlName="startDateOffService">
+              </label>
+              <label>
+                Volveré a estar disponible en:
+                <input type="date" formControlName="endDateOffService">
+              </label>
+            </div>
+
             <div class="form-actions">
               <button type="submit" [disabled]="!scheduleForm.valid" class="btn-guardar">
                 {{ (selectedSchedule$ | async) ? 'Guardar Cambios' : 'Agregar Horario' }}

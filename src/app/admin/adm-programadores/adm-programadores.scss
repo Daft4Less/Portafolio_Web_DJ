@@ -46,10 +46,11 @@ h2, h3 {
   }
 }
 
+/* --- Table Styles --- */
 .admin-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 800px; // Help with responsive scrolling
+  min-width: 800px; // Ayuda con el desplazamiento horizontal en pantallas pequeñas
 
   thead tr {
     border-bottom: 2px solid var(--border-color);
@@ -81,6 +82,37 @@ h2, h3 {
       height: 40px;
       border-radius: 50%;
       object-fit: cover;
+    }
+  }
+}
+
+// Ajustes de tabla para dispositivos móviles
+@media (max-width: 768px) {
+  .admin-table {
+    // Asegurarse de que el min-width siga aplicando para el scroll horizontal
+    // No se necesita cambiar aquí a menos que se quiera reducir el tamaño total de la tabla
+  }
+
+  // Usar una clase específica para la columna de rol para asegurar que el estilo se aplique en ambas tablas
+  .admin-table .col-rol { 
+    min-width: 150px; // Aumentar el espacio para el rol en móvil
+    white-space: normal; // Permitir que el texto se envuelva si es largo
+  }
+
+  // Ajustar los botones de acción para que se envuelvan si es necesario
+  .admin-table .acciones {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .admin-table .acciones .btn-accion {
+    padding: 0.5rem 0.8rem; // Reducir el padding de los botones de acción
+    font-size: 0.8rem; // Reducir el tamaño de la fuente de los botones de acción
+
+    // Ajuste específico para el botón "Promover a Programador" en móvil
+    &.btn-promover {
+      padding: 0.4rem 0.6rem; // Aún más pequeño
+      font-size: 0.7rem; // Fuente más pequeña
     }
   }
 }
