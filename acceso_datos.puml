@@ -1,0 +1,95 @@
+@startuml Capa de Acceso a Datos
+
+package "DAOs" {
+    interface AsesoriaDAO {
+        + addAsesoria(asesoria: Asesoria): void
+        + getAsesoriaById(id: String): Asesoria
+        + getAllAsesorias(): List<Asesoria>
+        + updateAsesoria(asesoria: Asesoria): void
+        + deleteAsesoria(id: String): void
+    }
+
+    class AsesoriaDAOImpl {
+        + addAsesoria(asesoria: Asesoria): void
+        + getAsesoriaById(id: String): Asesoria
+        + getAllAsesorias(): List<Asesoria>
+        + updateAsesoria(asesoria: Asesoria): void
+        + deleteAsesoria(id: String): void
+    }
+
+    interface ContactDAO {
+        + addContact(contact: Contact): void
+        + getContactById(id: String): Contact
+        + getAllContacts(): List<Contact>
+        + updateContact(contact: Contact): void
+        + deleteContact(id: String): void
+    }
+
+    class ContactDAOImpl {
+        + addContact(contact: Contact): void
+        + getContactById(id: String): Contact
+        + getAllContacts(): List<Contact>
+        + updateContact(contact: Contact): void
+        + deleteContact(id: String): void
+    }
+
+    interface ProjectDAO {
+        + addProject(project: Project): void
+        + getProjectById(id: String): Project
+        + getAllProjects(): List<Project>
+        + updateProject(project: Project): void
+        + deleteProject(id: String): void
+    }
+
+    class ProjectDAOImpl {
+        + addProject(project: Project): void
+        + getProjectById(id: String): Project
+        + getAllProjects(): List<Project>
+        + updateProject(project: Project): void
+        + deleteProject(id: String): void
+    }
+
+    interface ScheduleDAO {
+        + addSchedule(schedule: Schedule): void
+        + getScheduleById(id: String): Schedule
+        + getAllSchedules(): List<Schedule>
+        + updateSchedule(schedule: Schedule): void
+        + deleteSchedule(id: String): void
+    }
+
+    class ScheduleDAOImpl {
+        + addSchedule(schedule: Schedule): void
+        + getScheduleById(id: String): Schedule
+        + getAllSchedules(): List<Schedule>
+        + updateSchedule(schedule: Schedule): void
+        + deleteSchedule(id: String): void
+    }
+
+    interface UserDAO {
+        + addUser(user: User): void
+        + getUserById(id: String): User
+        + getAllUsers(): List<User>
+        + updateUser(user: User): void
+        + deleteUser(id: String): void
+    }
+
+    class UserDAOImpl {
+        + addUser(user: User): void
+        + getUserById(id: String): User
+        + getAllUsers(): List<User>
+        + updateUser(user: User): void
+        + deleteUser(id: String): void
+    }
+
+    AsesoriaDAOImpl ..|> AsesoriaDAO
+    ContactDAOImpl ..|> ContactDAO
+    ProjectDAOImpl ..|> ProjectDAO
+    ScheduleDAOImpl ..|> ScheduleDAO
+    UserDAOImpl ..|> UserDAO
+}
+
+note right of AsesoriaDAO
+    Interfaz para operaciones CRUD de asesorías en la base de datos
+end note
+
+@enduml
